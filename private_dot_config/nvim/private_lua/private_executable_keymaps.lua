@@ -8,6 +8,10 @@ keymap("i", "<Left>", "<-")
 keymap("i", "<S-Left>", "<=")
 keymap("i", "<Up>", "|>")
 keymap("i", "<Down>", "<>")
+keymap("n", "<Left>", "<<", { silent = true })
+keymap("v", "<Left>", "<", { silent = true })
+keymap("n", "<Right>", ">>", { silent = true })
+keymap("v", "<Right>", ">", { silent = true })
 keymap("n", "q", "<Nop>")
 
 -- Insert modeを抜けたら英数入力に切り替え
@@ -25,6 +29,7 @@ keymap("n", "<F2>", "zr<cr>", { silent = true }) -- 展開
 keymap("n", "<F3>", ":vs<cr>", { silent = true }) -- 水平に分割
 keymap("n", "<F4>", ":sp<cr>", { silent = true }) -- 垂直に分割
 keymap("n", "<leader>s", ":w<cr>", { silent = true }) -- 保存
+keymap("n", "W", ":noautocmd w<cr>", { silent = true }) -- 保存（autocmdを無効化）
 keymap("n", "<leader>w", ":q<cr>", { silent = true }) -- ウィンドウを閉じる
 -- keymap("n", "<leader>Q", ":q!<cr>", { silent = true }) -- 強制終了
 keymap("n", "<leader>q", ":qa<cr>", { silent = true }) -- 全てのウィンドウを閉じる

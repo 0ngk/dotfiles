@@ -52,7 +52,7 @@
 
     # Development tools
     gcc
-    gdb
+    # gdb
     nodejs
     pnpm
     python313
@@ -66,7 +66,7 @@
     biome
     stylua
     efm-langserver
-    pre-commit
+    # pre-commit
     typos
     ruff
     clang-tools

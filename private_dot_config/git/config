@@ -10,8 +10,10 @@
   clb      = clone -b
   cm       = commit
   cmm      = commit -m
+  d        = diff
   del      = reset --soft HEAD^
   diffnpst = !git --no-pager diff --staged
+  ds       = diff --staged
   ev       = !git add -A && git commit -m "wip" && git push origin HEAD
   ic       = !git commit --allow-empty -m "Initial commit"
   lognp    = !git --no-pager log
