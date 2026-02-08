@@ -14,8 +14,8 @@ end
 # source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
 
-# peco function fish_user_key_bindings
-bind \cr peco_select_history    # Ctrl + r
+# bind \cr history | fzf # Ctrl + r
+bind \cr 'commandline -r (history | fzf)'
 
 # Fish shell
 set -g fish_prompt_pwd_dir_length      0

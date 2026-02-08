@@ -133,6 +133,16 @@ return {
 
           bash = { sh },
           sh = { sh },
+
+          kotlin = {
+            function()
+              return {
+                exe = "ktlint",
+                args = { "-F", "-" },
+                stdin = true,
+              }
+            end,
+          },
         },
       })
     end,

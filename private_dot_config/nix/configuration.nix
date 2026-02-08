@@ -29,8 +29,10 @@
     delta
     difftastic
     lazygit
+    mercurial
+    commitizen
 
-    # Shell and terminal tools
+    # Shell & terminal
     bat
     bottom
     dust
@@ -39,7 +41,6 @@
     fzf
     tree
     procs
-    peco
     zoxide
     tmux
     screen
@@ -49,28 +50,53 @@
     tre-command
     gomi
     terminal-notifier
+    byobu
 
-    # Development tools
+    # Language runtimes & compilers
     gcc
     # gdb
     nodejs
-    pnpm
     python313
     python314
     go
-    gopls
-    rust-analyzer
     erlang
+    php
+
+    # Language toolchains & package managers
+    pnpm
+    typescript
     rebar3
     gleam
+    uv
+    deno
+    pipx
+    phpPackages.composer
+
+    # JVM
+    kotlin
+    gradle
+
+    # Language servers
+    typescript-language-server
+    gopls
+    rust-analyzer
+    efm-langserver
+    emmylua-ls
+    yaml-language-server
+    bash-language-server
+    phpactor
+    superhtml
+
+    # Linters & formatters
     biome
     stylua
-    efm-langserver
     # pre-commit
     typos
     ruff
     clang-tools
-    emmylua-ls
+    ktlint
+    shfmt
+    markdownlint-cli2
     alejandra
 
     # Network tools
@@ -91,42 +117,31 @@
     ffmpeg
     imagemagick
 
-    # File utilities
+    # Data tools
     jq
     yq
 
-    # Modern CLI tools
-    deno
-    uv
+    # Security
+    gnupg
+    bitwarden-cli
+
+    # System info
     fastfetch
     onefetch
+    glances
+    python313Packages.ipython
+
+    # Utilities
     chezmoi
     gibo
     zola
     dstp
     codex
     opencode
-
-    # Other utilities
-    gnupg
     nkf
     whois
     powershell
-    bitwarden-cli
-    byobu
-    commitizen
-    phpPackages.composer
-    glances
-    python313Packages.ipython
-    markdownlint-cli2
-    mercurial
-    php
-    phpactor
-    pipx
     xdg-ninja
-    superhtml
-    bash-language-server
-    shfmt
   ];
 
   # System defaults
@@ -212,6 +227,7 @@
     };
     taps = [
       "jorgelbg/tap"
+      "jetbrains/utils"
     ];
 
     # Formulae that are not available in nixpkgs or better managed by Homebrew
@@ -222,6 +238,8 @@
       "pinentry-touchid"
       "hettysoft/tap/hetty"
       "winetricks"
+      "JetBrains/utils/kotlin-lsp"
+      "openjdk@21"
     ];
 
     # Cask applications
@@ -279,7 +297,7 @@
       "spotify"
       "obs"
 
-      # Other
+      # LLMs
       "claude"
       "claude-code"
       "chatgpt"

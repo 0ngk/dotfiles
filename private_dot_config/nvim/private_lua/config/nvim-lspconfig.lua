@@ -188,6 +188,18 @@ vim.lsp.config("bashls", {
   cmd = { "bash-language-server", "start" },
 })
 
+-- Kotlin
+vim.lsp.config("kotlin-lsp", {
+  filetypes = { "kotlin" },
+  cmd = { "kotlin-lsp", "--stdio" },
+})
+
+-- YAML
+vim.lsp.config("yaml-language-server", {
+  filetypes = { "yaml" },
+  cmd = { "yaml-language-server", "--stdio" },
+})
+
 -- Enable all configured LSP servers
 vim.lsp.enable({
   "biome",
@@ -203,4 +215,6 @@ vim.lsp.enable({
   "clangd",
   "lua",
   "bashls",
+  "kotlin-lsp",
+  "yaml-language-server",
 })
