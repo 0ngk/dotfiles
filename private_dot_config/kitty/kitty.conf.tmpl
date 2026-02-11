@@ -22,7 +22,11 @@ symbol_map U+E0A0-U+E0A3,U+E0B0-U+E0BF,U+E0C0-U+E0C7,U+E0CC-U+E0CF,U+E0D0-U+E0D4
 background_image wallpapers/c_1.png
 # background_image wallpapers/m_1.png
 background_image_layout scaled
+{{ if eq .chezmoi.os "darwin" }}
 background_tint 0.98
+{{ else}}
+background_tint 0.9
+{{ end }}
 
 # ==========================================
 # Tab Bar Settings
