@@ -5,8 +5,62 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # This won't be added again if you remove it.
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
-alias f="fish"
+# ========================================
+# PATH Configuration
+# ========================================
 
+# 重複排除を有効化
+typeset -U path PATH
+
+# 環境変数が未定義の場合のデフォルト値を設定
+: ${GOPATH:="$XDG_DATA_HOME/go"}
+: ${PNPM_HOME:="$XDG_DATA_HOME/pnpm"}
+: ${COMPOSER_HOME:="$XDG_DATA_HOME/composer"}
+
+# 存在するディレクトリのみをPATHに追加
+# (N-/) = NULL_GLOB + ディレクトリのみ
+path=(
+  $HOME/.local/bin(N-/)
+  $CARGO_HOME/bin(N-/)
+  $GOPATH/bin(N-/)
+  $PNPM_HOME(N-/)
+  $COMPOSER_HOME/vendor/bin(N-/)
+  $HOME/.yarn/bin(N-/)
+  $HOME/.rvm/bin(N-/)
+  $path
+)
+
+# OS固有のパスを追加
+case "$OSTYPE" in
+  darwin*)
+    # macOS
+    path=(
+      /usr/local/go/bin(N-/)
+      $HOME/Library/Python/3.9/bin(N-/)
+      $HOME/Library/Python/3.*/bin(N-/)
+      $path
+    )
+    ;;
+  linux*)
+    # Linux
+    path=(
+      /usr/local/go/bin(N-/)
+      $path
+    )
+    # Pythonモジュールのインポートパス（必要な場合のみ）
+    # export PYTHONPATH="$HOME/.local/lib/python3.*/site-packages:/usr/lib/python3/dist-packages"
+    ;;
+  openbsd*)
+    # OpenBSD
+    path=(
+      /usr/local/go/bin(N-/)
+      $path
+    )
+    ;;
+esac
+
+# '.' と空要素 (= カレント相当) を path から除去 (セキュリティのため)
+path=(${path:#.} ${path:#''})
 
 # Added by Toolbox App
-export PATH="$PATH:/Users/rei/Library/Application Support/JetBrains/Toolbox/scripts"
+path+="/Users/rei/Library/Application Support/JetBrains/Toolbox/scripts"

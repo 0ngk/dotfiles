@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C ~/.config/zsh status)",
+      "Bash(git -C ~/.config/zsh diff --staged)",
+      "Bash(git -C ~/.config/zsh diff)",
+      "mcp__context7__query-docs"
+    ]
+  }
+}

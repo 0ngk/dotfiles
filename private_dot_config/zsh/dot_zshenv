@@ -1,18 +1,78 @@
-export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+# ========================================
+# XDG Base Directory
+# ========================================
+: ${XDG_CONFIG_HOME:="$HOME/.config"}
+: ${XDG_DATA_HOME:="$HOME/.local/share"}
+: ${XDG_STATE_HOME:="$HOME/.local/state"}
+: ${XDG_CACHE_HOME:="$HOME/.cache"}
+: ${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}}
+
+export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME XDG_RUNTIME_DIR
+
+# ========================================
+# Zsh Configuration
+# ========================================
+export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
 export SHELL_SESSIONS_DISABLE=1
 
-# XDG Base Directory
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+# ========================================
+# Editor
+# ========================================
+export EDITOR=nvim
 
+# ========================================
+# Zsh History
+# ========================================
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
+
+# ========================================
+# Rust
+# ========================================
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+
+# ========================================
+# Python
+# ========================================
+export IPYTHONDIR="$XDG_CONFIG_HOME/ipython"
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export MPLCONFIGDIR="$XDG_CONFIG_HOME/matplotlib"
+export PYTHONHISTFILE="$XDG_STATE_HOME/python/history"
+
+# ========================================
+# Go
+# ========================================
+export GOPATH="$XDG_DATA_HOME/go"
+
+# ========================================
+# Node.js / pnpm
+# ========================================
+export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
+export PNPM_HOME="$XDG_DATA_HOME/pnpm"
+
+# ========================================
+# Development Tools
+# ========================================
+export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
+export COMPOSER_HOME="$XDG_DATA_HOME/composer"
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export ANDROID_USER_HOME="$XDG_DATA_HOME/android"
+export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
+export WINEPREFIX="$XDG_DATA_HOME/wine"
+export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
+export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+
+# ========================================
+# NPM
+# ========================================
+export NPM_CONFIG_INIT_MODULE="$XDG_CONFIG_HOME/npm/config/npm-init.js"
+export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
+export NPM_CONFIG_TMP="$XDG_RUNTIME_DIR/npm"
+
+# ========================================
 # GPG
-export GPG_TTY=$(tty)
+# ========================================
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
-
-. "$HOME/.local/share/cargo/env"
-
-export NPM_CONFIG_INIT_MODULE="$XDG_CONFIG_HOME"/npm/config/npm-init.js
-export NPM_CONFIG_CACHE="$XDG_CACHE_HOME"/npm
-export NPM_CONFIG_TMP="$XDG_RUNTIME_DIR"/npm
+# Note: GPG_TTY is set in .zshrc (interactive shells only)

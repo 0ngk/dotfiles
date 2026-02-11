@@ -1,14 +1,35 @@
-# XDG Base Directory
-export XDG_DATA_HOME="${HOME}/.local/share"
-export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_STATE_HOME="${HOME}/.local/state"
-export XDG_CACHE_HOME="${HOME}/.cache"
-export XDG_RUNTIME_DIR="${TMPDIR}"
+# ========================================
+# Powerlevel10k Instant Prompt
+# ========================================
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-# GPG
-export GPG_TTY=$(tty)
-export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
+# ========================================
+# Zsh Configuration Loader
+# ========================================
+#
+# This file loads modular configuration files from conf.d/
+# Files are sourced in alphabetical/numerical order
+#
 
-export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+# Check if running in interactive mode
+[[ -o interactive ]] || return
 
-export PATH=/opt/homebrew/bin:$PATH
+# Configuration directory
+ZCONF_DIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/conf.d"
+
+# Source all .zsh files in conf.d/ directory
+if [[ -d "$ZCONF_DIR" ]]; then
+  for config_file in "$ZCONF_DIR"/*.zsh(N); do
+    # Debug logging (uncomment if needed)
+    # [[ -n "$ZSH_DEBUG" ]] && echo "Loading: $config_file"
+    source "$config_file"
+  done
+  unset config_file
+fi
+
+unset ZCONF_DIR
