@@ -1,0 +1,9 @@
+{
+  "files": {
+    "includes": ["**", "!**/node_modules"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  }
+}

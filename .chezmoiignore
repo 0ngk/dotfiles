@@ -1,11 +1,15 @@
-**/.git/**
 **/.DS_Store
+**/.git/**
 **/.localized
+**/node_modules
 
 .config/fish/fish_variables
 .config/fish/completions/**
 
 .config/karabiner/automatic_backups/**
+
+.config/opencode/bun.lock
+.config/opencode/package.json
 
 .config/wezterm/wallpapers/**
 
