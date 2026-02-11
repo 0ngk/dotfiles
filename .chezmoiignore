@@ -3,15 +3,23 @@
 **/.localized
 **/node_modules
 
+
 .config/fish/fish_variables
 .config/fish/completions/**
 
+
 .config/karabiner/automatic_backups/**
+
+
+.config/kitty/wallpapers/**
+
 
 .config/opencode/bun.lock
 .config/opencode/package.json
 
+
 .config/wezterm/wallpapers/**
+
 
 .config/zsh/.zcompdump
 .config/zsh/ohmyzsh
