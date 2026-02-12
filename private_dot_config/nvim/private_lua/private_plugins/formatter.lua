@@ -131,8 +131,9 @@ return {
             end,
           },
 
-          bash = { sh },
           sh = { sh },
+          bash = { sh },
+          zsh = { sh },
 
           kotlin = {
             function()

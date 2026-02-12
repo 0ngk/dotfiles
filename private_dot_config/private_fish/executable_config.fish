@@ -124,7 +124,7 @@ set -gx PNPM_HOME $HOME/.local/share/pnpm
 # Nix版pnpmを使用するため、PNPM_HOME自体はPATHに追加しない
 # グローバルパッケージのbinディレクトリのみPATHに追加
 fish_add_path $PNPM_HOME/node_modules/.bin
-fish_add_path .local/share/pnpm
+fish_add_path $HOME/.local/share/pnpm
 
 # nodejs
 set -gx NODE_REPL_HISTORY $XDG_STATE_HOME/node_repl_history

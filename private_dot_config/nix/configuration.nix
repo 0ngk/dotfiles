@@ -51,6 +51,7 @@
     gomi
     terminal-notifier
     byobu
+    # kitty
 
     # Language runtimes & compilers
     gcc
@@ -85,7 +86,7 @@
     yaml-language-server
     bash-language-server
     phpactor
-    superhtml
+    # superhtml
 
     # Linters & formatters
     biome
@@ -96,6 +97,7 @@
     clang-tools
     ktlint
     shfmt
+    shellcheck
     markdownlint-cli2
     alejandra
 
@@ -254,6 +256,7 @@
       "wezterm"
       "ghostty"
       "warp"
+      "kitty"
 
       # Development
       "visual-studio-code"
@@ -277,6 +280,7 @@
       "jordanbaird-ice"
       "alt-tab"
       "aerospace"
+      "amethyst"
 
       # Security
       "1password"
@@ -310,7 +314,7 @@
   ];
 
   # Programs
-  programs.zsh.enable = true;
+  # programs.zsh.enable = true;
   programs.fish.enable = true;
 
   # Primary user

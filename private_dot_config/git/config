@@ -10,6 +10,8 @@
   clb      = clone -b
   cm       = commit
   cmm      = commit -m
+  cmma     = commit -m "add"
+  cmmu     = commit -m "update"
   d        = diff
   del      = reset --soft HEAD^
   diffnpst = !git --no-pager diff --staged

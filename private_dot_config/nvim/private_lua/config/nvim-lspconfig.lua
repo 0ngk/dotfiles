@@ -184,7 +184,7 @@ vim.lsp.config("lua", {
 
 -- Bash
 vim.lsp.config("bashls", {
-  filetypes = { "bash", "sh" },
+  filetypes = { "sh", "bash", "zsh" },
   cmd = { "bash-language-server", "start" },
 })
 

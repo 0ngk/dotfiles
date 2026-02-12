@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   # Home Manager settings
   home.stateVersion = "24.11";
 
@@ -12,10 +15,10 @@
     XDG_CACHE_HOME = "$HOME/.cache";
     XDG_RUNTIME_DIR = "$TMPDIR";
 
-    # Shell
-    ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
-    SHELL_SESSIONS_DISABLE = "1";
-    HISTFILE = "$XDG_STATE_HOME/zsh/history";
+    # # Shell
+    # ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
+    # SHELL_SESSIONS_DISABLE = "1";
+    # HISTFILE = "$XDG_STATE_HOME/zsh/history";
 
     # NPM
     NPM_CONFIG_INIT_MODULE = "$XDG_CONFIG_HOME/npm/config/npm-init.js";
@@ -26,14 +29,13 @@
   # Programs
   programs.home-manager.enable = true;
 
-
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    initContent = ''
-      export GPG_TTY=$(tty)
-    '';
-  };
+  # programs.zsh = {
+  #   enable = true;
+  #   enableCompletion = true;
+  #   initContent = ''
+  #     export GPG_TTY=$(tty)
+  #   '';
+  # };
 
   programs.fzf = {
     enable = true;

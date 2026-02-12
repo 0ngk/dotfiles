@@ -56,4 +56,7 @@ return {
       local artemis = require("artemis")
     end,
   },
+  {
+    "mattn/emmet-vim",
+  },
 }
