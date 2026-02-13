@@ -18,6 +18,9 @@ get_cpu_usage() {
     return 1
   fi
 
+  # Convert comma-separated to space-separated
+  cpu_ticks="$(printf "%s" "$cpu_ticks" | tr ',' ' ')"
+
   if [ -z "$prev_cpu_ticks" ]; then
     prev_cpu_ticks="$cpu_ticks"
     printf "CPU --%%"
@@ -151,7 +154,7 @@ get_active_interface() {
 
   if [ -z "$iface" ]; then
     # Fallback: find first non-loopback interface with traffic
-    iface="$(netstat -ibn 2>/dev/null | awk '$1 !~ /^lo/ && $1 ~ /^[a-z]/ && ($7 > 0 || $10 > 0) {print $1; exit}')"
+    iface="$(netstat -ibn 2>/dev/null | awk '$1 !~ /^lo/ && $1 ~ /^[a-z]/ && ($5 > 0 || $6 > 0) {print $1; exit}')"
   fi
 
   net_interface="$iface"
@@ -168,14 +171,14 @@ get_network_stats() {
   fi
 
   # Get RX and TX bytes for the interface (using -I flag to specify interface)
-  # Format: netstat -I interface -ibn shows stats for specific interface
-  # Columns: Name Mtu Network Address Ipkts Ierrs Ibytes Opkts Oerrs Obytes Coll
-  #          1    2   3       4       5     6     7      8     9     10     11
-  net_stats="$(netstat -I "$iface" -bn 2>/dev/null | awk 'NR==2 && $3 == "<Link>" {print $7, $10}')"
+  # Format: netstat -I interface -bn shows stats for specific interface
+  # Columns: Name Mtu Network Address Ibytes Obytes
+  #          1    2   3       4       5      6
+  net_stats="$(netstat -I "$iface" -bn 2>/dev/null | awk 'NR==2 && $3 == "<Link>" {print $5, $6}')"
 
   if [ -z "$net_stats" ]; then
     # Fallback to parsing all interfaces
-    net_stats="$(netstat -ibn 2>/dev/null | awk -v iface="$iface" '$1 == iface && $3 == "<Link>" {print $7, $10; exit}')"
+    net_stats="$(netstat -ibn 2>/dev/null | awk -v iface="$iface" '$1 == iface && $3 == "<Link>" {print $5, $6; exit}')"
   fi
 
   if [ -z "$net_stats" ]; then
@@ -238,7 +241,12 @@ get_volume() {
 
     if [ -n "$vol_level" ]; then
       # Convert 0.0-1.0 to percentage
-      vol_percent="$(awk "BEGIN {printf \"%d\", $vol_level * 100}")"
+      if command -v bc >/dev/null 2>&1; then
+        vol_percent="$(echo "$vol_level * 100 / 1" | bc)"
+      else
+        # Fallback: try to parse as integer (some implementations might return 0-100)
+        vol_percent="$(printf "%.0f" "$vol_level" 2>/dev/null)" || vol_percent="50"
+      fi
 
       # Check if muted
       vol_mute="$(sndioctl -n output.mute 2>/dev/null)"
