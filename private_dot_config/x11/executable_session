@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Keyboard
+xset r rate 300 20
+
+# Load keybindings
+xmodmap ~/.config/xmodmap/xmodmap
+
+# Deamons
+## Clipboard manager
+xfce4-clipman &
+
+## Notification
+dunst &
+
+# Start a wm
+exec spectrwm
