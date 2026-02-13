@@ -2,15 +2,34 @@
 
 SLEEP_SECOND=1
 
-# State variables for delta calculations
-prev_cpu_ticks=""
-prev_net_rx=""
-prev_net_tx=""
-net_interface=""
-prev_timestamp=""
+# State file for persistent data across function calls
+STATE_FILE="/tmp/bar_action_state_$$"
+
+# Initialize state file
+if [ ! -f "$STATE_FILE" ]; then
+  printf "prev_cpu_ticks=\nprev_net_rx=\nprev_net_tx=\nnet_interface=\n" > "$STATE_FILE"
+fi
+
+# Cleanup on exit
+trap 'rm -f "$STATE_FILE"' EXIT INT TERM
+
+# Load state
+load_state() {
+  if [ -f "$STATE_FILE" ]; then
+    . "$STATE_FILE"
+  fi
+}
+
+# Save state
+save_state() {
+  printf "prev_cpu_ticks='%s'\nprev_net_rx='%s'\nprev_net_tx='%s'\nnet_interface='%s'\n" \
+    "$prev_cpu_ticks" "$prev_net_rx" "$prev_net_tx" "$net_interface" > "$STATE_FILE"
+}
 
 # Get CPU usage percentage
 get_cpu_usage() {
+  load_state
+
   cpu_ticks="$(sysctl -n kern.cp_time 2>/dev/null)"
 
   if [ -z "$cpu_ticks" ]; then
@@ -23,6 +42,7 @@ get_cpu_usage() {
 
   if [ -z "$prev_cpu_ticks" ]; then
     prev_cpu_ticks="$cpu_ticks"
+    save_state
     printf "CPU --%%"
     return 0
   fi
@@ -63,6 +83,7 @@ get_cpu_usage() {
   fi
 
   prev_cpu_ticks="$cpu_ticks"
+  save_state
 }
 
 # Get memory usage
@@ -144,6 +165,8 @@ format_bytes() {
 
 # Auto-detect active network interface
 get_active_interface() {
+  load_state
+
   if [ -n "$net_interface" ]; then
     printf "%s" "$net_interface"
     return 0
@@ -163,6 +186,8 @@ get_active_interface() {
 
 # Get network traffic statistics
 get_network_stats() {
+  load_state
+
   iface="$(get_active_interface)"
 
   if [ -z "$iface" ]; then
@@ -199,6 +224,7 @@ get_network_stats() {
   if [ -z "$prev_net_rx" ] || [ -z "$prev_net_tx" ]; then
     prev_net_rx="$curr_rx"
     prev_net_tx="$curr_tx"
+    save_state
     printf "NET --"
     return 0
   fi
@@ -231,6 +257,7 @@ get_network_stats() {
 
   prev_net_rx="$curr_rx"
   prev_net_tx="$curr_tx"
+  save_state
 }
 
 # Get volume level
