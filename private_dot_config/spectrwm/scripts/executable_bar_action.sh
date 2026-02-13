@@ -7,7 +7,7 @@ STATE_FILE="/tmp/bar_action_state_$$"
 
 # Initialize state file
 if [ ! -f "$STATE_FILE" ]; then
-  printf "prev_cpu_ticks=\nprev_net_rx=\nprev_net_tx=\nnet_interface=\n" > "$STATE_FILE"
+  printf "prev_cpu_ticks=\nprev_net_rx=\nprev_net_tx=\nnet_interface=\n" >"$STATE_FILE"
 fi
 
 # Cleanup on exit
@@ -23,7 +23,7 @@ load_state() {
 # Save state
 save_state() {
   printf "prev_cpu_ticks='%s'\nprev_net_rx='%s'\nprev_net_tx='%s'\nnet_interface='%s'\n" \
-    "$prev_cpu_ticks" "$prev_net_rx" "$prev_net_tx" "$net_interface" > "$STATE_FILE"
+    "$prev_cpu_ticks" "$prev_net_rx" "$prev_net_tx" "$net_interface" >"$STATE_FILE"
 }
 
 # Get CPU usage percentage
@@ -397,7 +397,7 @@ get_battery_info() {
 # Main loop
 while :; do
   # Collect all metrics
-  focused="$(get_focused_app)"
+  # focused="$(get_focused_app)"
   cpu="$(get_cpu_usage)"
   mem="$(get_memory_usage)"
   load="$(get_load_average)"
@@ -409,7 +409,7 @@ while :; do
   media="$(get_media_info)"
 
   # Format output
-  printf "%s | %s | %s | %s | %s" "$focused" "$cpu" "$mem" "$load" "$net"
+  printf "%s | %s | %s | %s" "$cpu" "$mem" "$load" "$net"
 
   # Add media info if available
   if [ -n "$media" ]; then
