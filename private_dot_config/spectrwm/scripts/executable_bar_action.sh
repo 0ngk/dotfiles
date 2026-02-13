@@ -1,8 +1,267 @@
 #!/bin/sh
 
-SLEEP_SECOND=60
+SLEEP_SECOND=5
 
-while :; do
+# State variables for delta calculations
+prev_cpu_ticks=""
+prev_net_rx=""
+prev_net_tx=""
+net_interface=""
+prev_timestamp=""
+
+# Get CPU usage percentage
+get_cpu_usage() {
+  cpu_ticks="$(sysctl -n kern.cp_time 2>/dev/null)" || return 1
+
+  if [ -z "$prev_cpu_ticks" ]; then
+    prev_cpu_ticks="$cpu_ticks"
+    printf "CPU --%%"
+    return 0
+  fi
+
+  # Parse current ticks: user nice sys intr idle
+  set -- $cpu_ticks
+  curr_user=$1 curr_nice=$2 curr_sys=$3 curr_intr=$4 curr_idle=$5
+
+  # Parse previous ticks
+  set -- $prev_cpu_ticks
+  prev_user=$1 prev_nice=$2 prev_sys=$3 prev_intr=$4 prev_idle=$5
+
+  # Calculate deltas
+  user_delta=$((curr_user - prev_user))
+  nice_delta=$((curr_nice - prev_nice))
+  sys_delta=$((curr_sys - prev_sys))
+  intr_delta=$((curr_intr - prev_intr))
+  idle_delta=$((curr_idle - prev_idle))
+
+  # Total delta
+  total_delta=$((user_delta + nice_delta + sys_delta + intr_delta + idle_delta))
+
+  if [ "$total_delta" -eq 0 ]; then
+    printf "CPU 0%%"
+  else
+    active_delta=$((user_delta + nice_delta + sys_delta + intr_delta))
+    cpu_percent=$((active_delta * 100 / total_delta))
+    printf "CPU %d%%" "$cpu_percent"
+  fi
+
+  prev_cpu_ticks="$cpu_ticks"
+}
+
+# Get memory usage
+get_memory_usage() {
+  # Using top to get memory info
+  mem_info="$(top -b -1 2>/dev/null | grep -i 'memory:' | head -n 1)" || return 1
+
+  if [ -z "$mem_info" ]; then
+    printf "MEM --"
+    return 1
+  fi
+
+  # Parse memory info (format varies, attempt to extract used/total)
+  # Typical format: "Memory: Real: 123M/456M act/tot Free: 333M Cache: 100M Swap: 0K/1024M"
+  total_mb="$(printf "%s" "$mem_info" | sed -n 's/.*\/\([0-9]*\)M.*/\1/p' | head -n 1)"
+  used_mb="$(printf "%s" "$mem_info" | sed -n 's/.*Real: \([0-9]*\)M.*/\1/p')"
+
+  if [ -n "$total_mb" ] && [ -n "$used_mb" ]; then
+    # Convert to GB if > 1024MB
+    if [ "$total_mb" -ge 1024 ]; then
+      total_gb="$(awk "BEGIN {printf \"%.1f\", $total_mb/1024}")"
+      used_gb="$(awk "BEGIN {printf \"%.1f\", $used_mb/1024}")"
+      printf "MEM %sG/%sG" "$used_gb" "$total_gb"
+    else
+      printf "MEM %dM/%dM" "$used_mb" "$total_mb"
+    fi
+  else
+    printf "MEM --"
+  fi
+}
+
+# Get load average
+get_load_average() {
+  load="$(sysctl -n vm.loadavg 2>/dev/null)" || return 1
+
+  # Extract 1-minute load average (first number)
+  load_1min="$(printf "%s" "$load" | awk '{print $1}')"
+
+  if [ -n "$load_1min" ]; then
+    printf "LOAD %s" "$load_1min"
+  else
+    printf "LOAD --"
+  fi
+}
+
+# Auto-detect active network interface
+get_active_interface() {
+  if [ -n "$net_interface" ]; then
+    printf "%s" "$net_interface"
+    return 0
+  fi
+
+  # Try to get default route interface
+  iface="$(netstat -rn 2>/dev/null | awk '/^default/ {print $NF; exit}')"
+
+  if [ -z "$iface" ]; then
+    # Fallback: find first non-loopback interface with traffic
+    iface="$(netstat -ibn 2>/dev/null | awk '$1 !~ /^lo/ && $1 ~ /^[a-z]/ && ($7 > 0 || $10 > 0) {print $1; exit}')"
+  fi
+
+  net_interface="$iface"
+  printf "%s" "$iface"
+}
+
+# Get network traffic statistics
+get_network_stats() {
+  iface="$(get_active_interface)"
+
+  if [ -z "$iface" ]; then
+    printf "NET --"
+    return 1
+  fi
+
+  # Get RX and TX bytes for the interface
+  net_stats="$(netstat -ibn 2>/dev/null | awk -v iface="$iface" '$1 == iface {print $7, $10; exit}')"
+
+  if [ -z "$net_stats" ]; then
+    printf "NET --"
+    return 1
+  fi
+
+  set -- $net_stats
+  curr_rx="$1"
+  curr_tx="$2"
+
+  if [ -z "$prev_net_rx" ] || [ -z "$prev_net_tx" ]; then
+    prev_net_rx="$curr_rx"
+    prev_net_tx="$curr_tx"
+    printf "NET --"
+    return 0
+  fi
+
+  # Calculate deltas
+  rx_delta=$((curr_rx - prev_net_rx))
+  tx_delta=$((curr_tx - prev_net_tx))
+
+  # Convert to rate per second (divide by sleep interval)
+  rx_rate=$((rx_delta / SLEEP_SECOND))
+  tx_rate=$((tx_delta / SLEEP_SECOND))
+
+  # Format with appropriate units (K/M/G)
+  format_bytes() {
+    bytes="$1"
+    if [ "$bytes" -ge 1073741824 ]; then
+      # GB
+      awk "BEGIN {printf \"%.1fG\", $bytes/1073741824}"
+    elif [ "$bytes" -ge 1048576 ]; then
+      # MB
+      awk "BEGIN {printf \"%.1fM\", $bytes/1048576}"
+    elif [ "$bytes" -ge 1024 ]; then
+      # KB
+      awk "BEGIN {printf \"%dK\", $bytes/1024}"
+    else
+      printf "%dB" "$bytes"
+    fi
+  }
+
+  rx_formatted="$(format_bytes "$rx_rate")"
+  tx_formatted="$(format_bytes "$tx_rate")"
+
+  printf "NET ↓%s ↑%s" "$rx_formatted" "$tx_formatted"
+
+  prev_net_rx="$curr_rx"
+  prev_net_tx="$curr_tx"
+}
+
+# Get volume level
+get_volume() {
+  # Try sndioctl first (OpenBSD 7.0+)
+  if command -v sndioctl >/dev/null 2>&1; then
+    vol_level="$(sndioctl -n output.level 2>/dev/null)"
+
+    if [ -n "$vol_level" ]; then
+      # Convert 0.0-1.0 to percentage
+      vol_percent="$(awk "BEGIN {printf \"%d\", $vol_level * 100}")"
+
+      # Check if muted
+      vol_mute="$(sndioctl -n output.mute 2>/dev/null)"
+      if [ "$vol_mute" = "1" ]; then
+        printf "VOL MUTE"
+      else
+        printf "VOL %d%%" "$vol_percent"
+      fi
+      return 0
+    fi
+  fi
+
+  # Fallback to mixerctl
+  if command -v mixerctl >/dev/null 2>&1; then
+    vol_info="$(mixerctl -n outputs.master 2>/dev/null)"
+
+    if [ -n "$vol_info" ]; then
+      # Parse format like "255,255" (left,right)
+      vol_left="$(printf "%s" "$vol_info" | cut -d',' -f1)"
+
+      # Assume max is 255, convert to percentage
+      vol_percent=$((vol_left * 100 / 255))
+      printf "VOL %d%%" "$vol_percent"
+      return 0
+    fi
+  fi
+
+  printf "VOL --"
+}
+
+# Get currently playing media info
+get_media_info() {
+  # Try playerctl first
+  if command -v playerctl >/dev/null 2>&1; then
+    # Check if any player is playing
+    player_status="$(playerctl status 2>/dev/null)"
+
+    if [ "$player_status" = "Playing" ]; then
+      media="$(playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null)"
+
+      if [ -n "$media" ]; then
+        # Truncate if too long
+        if [ "${#media}" -gt 40 ]; then
+          media="$(printf "%.37s..." "$media")"
+        fi
+        printf "♪ %s" "$media"
+        return 0
+      fi
+    fi
+  fi
+
+  # No media playing or playerctl not available
+  return 1
+}
+
+# Get focused application name
+get_focused_app() {
+  # Try xdotool first
+  if command -v xdotool >/dev/null 2>&1; then
+    app_name="$(xdotool getwindowfocus getwindowname 2>/dev/null)"
+  elif command -v xprop >/dev/null 2>&1; then
+    # Fallback to xprop
+    active_window="$(xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | cut -d' ' -f5)"
+    if [ -n "$active_window" ]; then
+      app_name="$(xprop -id "$active_window" WM_NAME 2>/dev/null | cut -d'"' -f2)"
+    fi
+  fi
+
+  if [ -n "$app_name" ]; then
+    # Truncate if too long
+    if [ "${#app_name}" -gt 30 ]; then
+      app_name="$(printf "%.27s..." "$app_name")"
+    fi
+    printf "[%s]" "$app_name"
+  else
+    printf "[--]"
+  fi
+}
+
+# Get battery information (refactored from original)
+get_battery_info() {
   battery_percent="$(apm -l 2>/dev/null)"
   battery_ac_connection="$(apm -a 2>/dev/null)"
   battery_status="$(apm -b 2>/dev/null)"
@@ -36,10 +295,35 @@ while :; do
   esac
 
   if [ -n "$battery_percent" ]; then
-    printf "BAT %s%% %s %s\n" "$battery_percent" "$state" "$power"
+    printf "BAT %s%% %s %s" "$battery_percent" "$state" "$power"
   else
-    printf "BAT unknown\n"
+    printf "BAT --"
   fi
+}
+
+# Main loop
+while :; do
+  # Collect all metrics
+  focused="$(get_focused_app)"
+  cpu="$(get_cpu_usage)"
+  mem="$(get_memory_usage)"
+  load="$(get_load_average)"
+  net="$(get_network_stats)"
+  vol="$(get_volume)"
+  bat="$(get_battery_info)"
+
+  # Get media info (only if playing)
+  media="$(get_media_info)"
+
+  # Format output
+  printf "%s | %s | %s | %s | %s" "$focused" "$cpu" "$mem" "$load" "$net"
+
+  # Add media info if available
+  if [ -n "$media" ]; then
+    printf " | %s" "$media"
+  fi
+
+  printf " | %s | %s\n" "$vol" "$bat"
 
   sleep "$SLEEP_SECOND"
 done
