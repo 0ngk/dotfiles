@@ -29,4 +29,4 @@ opt.winblend = 40 -- ウィンドウの不透明度
 opt.fillchars = { eob = " " }
 
 g.mapleader = " "
-g["denops#deno"] = "/run/current-system/sw/bin/deno"
+g["denops#deno"] = vim.fn.trim(vim.fn.system("which deno"))
