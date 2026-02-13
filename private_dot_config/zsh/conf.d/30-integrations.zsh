@@ -11,7 +11,9 @@ fi
 # ========================================
 # Rust
 # ========================================
-. "$HOME/.local/share/cargo/env"
+if [[ -f "$HOME/.local/share/cargo/env" ]]; then
+  . "$HOME/.local/share/cargo/env"
+fi
 
 # ========================================
 # Zoxide
