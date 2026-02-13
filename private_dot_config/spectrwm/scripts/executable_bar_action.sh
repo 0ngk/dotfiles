@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SLEEP_SECOND=5
+SLEEP_SECOND=1
 
 # State variables for delta calculations
 prev_cpu_ticks=""
@@ -11,7 +11,12 @@ prev_timestamp=""
 
 # Get CPU usage percentage
 get_cpu_usage() {
-  cpu_ticks="$(sysctl -n kern.cp_time 2>/dev/null)" || return 1
+  cpu_ticks="$(sysctl -n kern.cp_time 2>/dev/null)"
+
+  if [ -z "$cpu_ticks" ]; then
+    printf "CPU --%%"
+    return 1
+  fi
 
   if [ -z "$prev_cpu_ticks" ]; then
     prev_cpu_ticks="$cpu_ticks"
@@ -21,10 +26,19 @@ get_cpu_usage() {
 
   # Parse current ticks: user nice sys intr idle
   set -- $cpu_ticks
+  if [ "$#" -lt 5 ]; then
+    printf "CPU ERR"
+    return 1
+  fi
   curr_user=$1 curr_nice=$2 curr_sys=$3 curr_intr=$4 curr_idle=$5
 
   # Parse previous ticks
   set -- $prev_cpu_ticks
+  if [ "$#" -lt 5 ]; then
+    prev_cpu_ticks="$cpu_ticks"
+    printf "CPU --%%"
+    return 0
+  fi
   prev_user=$1 prev_nice=$2 prev_sys=$3 prev_intr=$4 prev_idle=$5
 
   # Calculate deltas
@@ -66,9 +80,15 @@ get_memory_usage() {
   if [ -n "$total_mb" ] && [ -n "$used_mb" ]; then
     # Convert to GB if > 1024MB
     if [ "$total_mb" -ge 1024 ]; then
-      total_gb="$(awk "BEGIN {printf \"%.1f\", $total_mb/1024}")"
-      used_gb="$(awk "BEGIN {printf \"%.1f\", $used_mb/1024}")"
-      printf "MEM %sG/%sG" "$used_gb" "$total_gb"
+      if command -v bc >/dev/null 2>&1; then
+        total_gb="$(echo "scale=1; $total_mb/1024" | bc)"
+        used_gb="$(echo "scale=1; $used_mb/1024" | bc)"
+        printf "MEM %sG/%sG" "$used_gb" "$total_gb"
+      else
+        total_gb=$((total_mb / 1024))
+        used_gb=$((used_mb / 1024))
+        printf "MEM %dG/%dG" "$used_gb" "$total_gb"
+      fi
     else
       printf "MEM %dM/%dM" "$used_mb" "$total_mb"
     fi
@@ -88,6 +108,34 @@ get_load_average() {
     printf "LOAD %s" "$load_1min"
   else
     printf "LOAD --"
+  fi
+}
+
+# Format bytes with appropriate units (K/M/G)
+format_bytes() {
+  bytes="$1"
+  if [ "$bytes" -ge 1073741824 ]; then
+    # GB - use bc if available, otherwise integer math
+    if command -v bc >/dev/null 2>&1; then
+      printf "%.1fG" "$(echo "scale=1; $bytes/1073741824" | bc)"
+    else
+      gb=$((bytes / 1073741824))
+      printf "%dG" "$gb"
+    fi
+  elif [ "$bytes" -ge 1048576 ]; then
+    # MB
+    if command -v bc >/dev/null 2>&1; then
+      printf "%.1fM" "$(echo "scale=1; $bytes/1048576" | bc)"
+    else
+      mb=$((bytes / 1048576))
+      printf "%dM" "$mb"
+    fi
+  elif [ "$bytes" -ge 1024 ]; then
+    # KB
+    kb=$((bytes / 1024))
+    printf "%dK" "$kb"
+  else
+    printf "%dB" "$bytes"
   fi
 }
 
@@ -119,8 +167,16 @@ get_network_stats() {
     return 1
   fi
 
-  # Get RX and TX bytes for the interface
-  net_stats="$(netstat -ibn 2>/dev/null | awk -v iface="$iface" '$1 == iface {print $7, $10; exit}')"
+  # Get RX and TX bytes for the interface (using -I flag to specify interface)
+  # Format: netstat -I interface -ibn shows stats for specific interface
+  # Columns: Name Mtu Network Address Ipkts Ierrs Ibytes Opkts Oerrs Obytes Coll
+  #          1    2   3       4       5     6     7      8     9     10     11
+  net_stats="$(netstat -I "$iface" -bn 2>/dev/null | awk 'NR==2 && $3 == "<Link>" {print $7, $10}')"
+
+  if [ -z "$net_stats" ]; then
+    # Fallback to parsing all interfaces
+    net_stats="$(netstat -ibn 2>/dev/null | awk -v iface="$iface" '$1 == iface && $3 == "<Link>" {print $7, $10; exit}')"
+  fi
 
   if [ -z "$net_stats" ]; then
     printf "NET --"
@@ -130,6 +186,12 @@ get_network_stats() {
   set -- $net_stats
   curr_rx="$1"
   curr_tx="$2"
+
+  # Validate that we got numbers
+  if [ -z "$curr_rx" ] || [ -z "$curr_tx" ]; then
+    printf "NET --"
+    return 1
+  fi
 
   if [ -z "$prev_net_rx" ] || [ -z "$prev_net_tx" ]; then
     prev_net_rx="$curr_rx"
@@ -142,26 +204,22 @@ get_network_stats() {
   rx_delta=$((curr_rx - prev_net_rx))
   tx_delta=$((curr_tx - prev_net_tx))
 
-  # Convert to rate per second (divide by sleep interval)
-  rx_rate=$((rx_delta / SLEEP_SECOND))
-  tx_rate=$((tx_delta / SLEEP_SECOND))
+  # Handle counter wrapping (negative delta)
+  if [ "$rx_delta" -lt 0 ]; then
+    rx_delta=0
+  fi
+  if [ "$tx_delta" -lt 0 ]; then
+    tx_delta=0
+  fi
 
-  # Format with appropriate units (K/M/G)
-  format_bytes() {
-    bytes="$1"
-    if [ "$bytes" -ge 1073741824 ]; then
-      # GB
-      awk "BEGIN {printf \"%.1fG\", $bytes/1073741824}"
-    elif [ "$bytes" -ge 1048576 ]; then
-      # MB
-      awk "BEGIN {printf \"%.1fM\", $bytes/1048576}"
-    elif [ "$bytes" -ge 1024 ]; then
-      # KB
-      awk "BEGIN {printf \"%dK\", $bytes/1024}"
-    else
-      printf "%dB" "$bytes"
-    fi
-  }
+  # Convert to rate per second (divide by sleep interval)
+  if [ "$SLEEP_SECOND" -gt 0 ]; then
+    rx_rate=$((rx_delta / SLEEP_SECOND))
+    tx_rate=$((tx_delta / SLEEP_SECOND))
+  else
+    rx_rate="$rx_delta"
+    tx_rate="$tx_delta"
+  fi
 
   rx_formatted="$(format_bytes "$rx_rate")"
   tx_formatted="$(format_bytes "$tx_rate")"
