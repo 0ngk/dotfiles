@@ -6,6 +6,9 @@ xset r rate 300 20
 # Load keybindings
 xmodmap ~/.config/xmodmap/xmodmap
 
+# Wallpaper
+xwallpaper --zoom "$HOME/Pictures/wallpapers/c_1.png" &
+
 # Deamons
 ## Clipboard manager
 xfce4-clipman &
