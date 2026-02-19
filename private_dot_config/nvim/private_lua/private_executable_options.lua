@@ -18,6 +18,8 @@ opt.spell = true
 -- フォルド
 opt.foldmethod = "marker"
 -- インデント
+opt.autoindent = true
+opt.smartindent = true
 opt.expandtab = true
 opt.tabstop = 2
 opt.softtabstop = 2

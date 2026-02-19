@@ -138,7 +138,6 @@
     gibo
     zola
     dstp
-    codex
     opencode
     nkf
     whois
@@ -259,6 +258,8 @@
       "kitty"
 
       # Development
+      "codex"
+      "codex-app"
       "visual-studio-code"
       "intellij-idea"
       "intellij-idea-ce"
