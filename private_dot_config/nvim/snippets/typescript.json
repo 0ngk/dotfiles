@@ -1,0 +1,6 @@
+{
+  "private readonly": {
+    "prefix": "private",
+    "body": ["private readonly ${1:propertyName}: ${2:type} = ${3:value};"]
+  }
+}

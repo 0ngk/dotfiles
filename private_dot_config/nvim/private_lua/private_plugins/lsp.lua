@@ -57,4 +57,20 @@ return {
       vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
     end,
   },
+  {
+    "stevearc/aerial.nvim",
+    event = "VeryLazy",
+    opts = {
+      backends = { "treesitter", "lsp" },
+      layout = {
+        default_direction = "right",
+        min_width = 30,
+      },
+    },
+    keys = {
+      { "<leader>co", "<cmd>AerialToggle!<cr>", desc = "Toggle Outline" },
+      { "{", "<cmd>AerialPrev<cr>", desc = "Previous Symbol" },
+      { "}", "<cmd>AerialNext<cr>", desc = "Next Symbol" },
+    },
+  },
 }

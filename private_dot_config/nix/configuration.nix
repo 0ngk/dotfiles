@@ -62,6 +62,7 @@
     go
     erlang
     php
+    lua
 
     # Language toolchains & package managers
     pnpm

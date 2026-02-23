@@ -14,6 +14,9 @@
 .config/kitty/wallpapers/**
 
 
+.config/nvim/lazy-lock.json
+
+
 .config/opencode/bun.lock
 .config/opencode/package.json
 

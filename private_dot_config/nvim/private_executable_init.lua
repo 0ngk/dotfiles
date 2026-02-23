@@ -1,5 +1,6 @@
 -- Core
 require("options")
+require("config.whitespace")
 require("config.lazy")
 require("keymaps")
 

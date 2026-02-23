@@ -9,6 +9,11 @@ local on_attach = function(client, bufnr)
   if client.supports_method("textDocument/inlayHint") then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
+
+  -- nvim-navic breadcrumbs
+  if client.server_capabilities.documentSymbolProvider then
+    require("nvim-navic").attach(client, bufnr)
+  end
 end
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()

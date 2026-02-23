@@ -11,18 +11,8 @@ return {
       })
     end,
   },
-  { "nvim-lua/popup.nvim" },
   { "nvim-tree/nvim-web-devicons" },
   { "MunifTanjim/nui.nvim" },
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup({
-        background_colour = "#2a5496",
-      })
-    end,
-  },
-  { "Shougo/context_filetype.vim" },
   {
     "EdenEast/nightfox.nvim",
     config = function()
@@ -273,7 +263,32 @@ return {
           },
         },
       })
-      feline.winbar.setup()
+
+      -- Winbar with navic breadcrumbs
+      local winbar_components = {
+        active = {
+          {
+            {
+              provider = function()
+                local navic = require("nvim-navic")
+                if navic.is_available() then
+                  return navic.get_location()
+                end
+                return ""
+              end,
+              hl = {
+                fg = colors.lavender_soft,
+                bg = colors.bg,
+              },
+              left_sep = " ",
+            },
+          },
+        },
+        inactive = {
+          {},
+        },
+      }
+      feline.winbar.setup({ components = winbar_components })
     end,
   },
   {
@@ -359,7 +374,7 @@ return {
     config = function()
       require("noice").setup({
         cmdline = {
-          enabled = false,
+          enabled = true,
         },
         messages = {
           enabled = false,
@@ -381,37 +396,6 @@ return {
           lsp_doc_border = false,
         },
       })
-    end,
-  },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    config = function()
-      local highlight = {
-        "RainbowPink",
-        "RainbowLavender",
-        "RainbowBlue",
-        "RainbowPinkSoft",
-        "RainbowBlueSoft",
-        "RainbowLavenderSoft",
-      }
-      local hooks = require("ibl.hooks")
-      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, "RainbowPink", { fg = "#ffc4d6" })
-        vim.api.nvim_set_hl(0, "RainbowLavender", { fg = "#e9d9ee" })
-        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#6b8dd6" })
-        vim.api.nvim_set_hl(0, "RainbowPinkSoft", { fg = "#f3a0bb" })
-        vim.api.nvim_set_hl(0, "RainbowBlueSoft", { fg = "#4d6ba6" })
-        vim.api.nvim_set_hl(0, "RainbowLavenderSoft", { fg = "#c9b3ce" })
-      end)
-      vim.g.rainbow_delimiters = { highlight = highlight }
-      require("ibl").setup({ scope = { highlight = highlight } })
-      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
-    end,
-  },
-  {
-    "norcalli/nvim-colorizer.lua",
-    config = function()
-      require("colorizer").setup()
     end,
   },
 }
