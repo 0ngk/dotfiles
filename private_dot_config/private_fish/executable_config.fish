@@ -139,7 +139,25 @@ alias mvn "mvn -gs $XDG_CONFIG_HOME/maven/settings.xml"
 set -gx WAKATIME_HOME $XDG_CONFIG_HOME/wakatime
 
 # dotnet
+if command -sq dotnet
+    set -l dotnet_bin (command -s dotnet)
+    set -l dotnet_real_bin ""
+
+    # Nix often exposes a wrapper under `.../bin`, but apphosts need the actual runtime root.
+    if command -sq realpath
+        set dotnet_real_bin (realpath "$dotnet_bin" 2>/dev/null)
+    end
+
+    if test -n "$dotnet_real_bin"; and test -x "$dotnet_real_bin"
+        set -gx DOTNET_ROOT (dirname "$dotnet_real_bin")
+    else
+        set -gx DOTNET_ROOT (dirname "$dotnet_bin")
+    end
+else
+    set -gx DOTNET_ROOT $XDG_DATA_HOME/dotnet
+end
 set -gx DOTNET_CLI_HOME $XDG_DATA_HOME/dotnet
+fish_add_path $DOTNET_CLI_HOME/.dotnet/tools
 
 # php
 set -gx COMPOSER_HOME $XDG_CONFIG_HOME/composer

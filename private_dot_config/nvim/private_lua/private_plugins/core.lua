@@ -23,7 +23,6 @@ return {
       spec = {
         { "<leader>d", group = "Debug" },
         { "<leader>t", group = "Test" },
-        { "<leader>g", group = "Grep/Git" },
         { "<leader>x", group = "Trouble" },
         { "<leader>c", group = "Code" },
         { "<leader>o", group = "AI" },

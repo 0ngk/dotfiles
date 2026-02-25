@@ -205,6 +205,19 @@ vim.lsp.config("yaml-language-server", {
   cmd = { "yaml-language-server", "--stdio" },
 })
 
+-- C#
+vim.lsp.config("csharp-ls", {
+  filetypes = { "cs" },
+  cmd = { "csharp-ls" },
+})
+
+-- Erlang
+-- vim.lsp.config("erlls", {
+--   on_attach = on_attach,
+--   capabilities = capabilities,
+--   cmd = { "erlls" },
+-- })
+
 -- Enable all configured LSP servers
 vim.lsp.enable({
   "biome",
@@ -222,4 +235,6 @@ vim.lsp.enable({
   "bashls",
   "kotlin-lsp",
   "yaml-language-server",
+  "csharp-ls",
+  "erlls",
 })

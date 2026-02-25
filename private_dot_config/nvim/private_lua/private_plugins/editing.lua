@@ -42,7 +42,6 @@ return {
       { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO" },
       { "[t", function() require("todo-comments").jump_prev() end, desc = "Prev TODO" },
       { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "TODOs (Trouble)" },
-      { "<leader>ft", function() Snacks.picker.todo_comments() end, desc = "Search TODOs" },
     },
   },
 }

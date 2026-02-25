@@ -6,6 +6,9 @@
 }: {
   # Platform
   nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.config = {
+    allowUnsupportedSystem = true;
+  };
 
   # Nix configuration
   nix.settings = {
@@ -63,6 +66,9 @@
     erlang
     php
     lua
+    dotnet-sdk_10
+    csharp-ls
+    csharpier
 
     # Language toolchains & package managers
     pnpm

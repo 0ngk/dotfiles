@@ -58,7 +58,27 @@ export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export COMPOSER_HOME="$XDG_DATA_HOME/composer"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export ANDROID_USER_HOME="$XDG_DATA_HOME/android"
+if command -v dotnet >/dev/null 2>&1; then
+  _dotnet_bin="$(command -v dotnet)"
+  _dotnet_real_bin=""
+
+  # Nix often exposes a wrapper under `.../bin`, but apphosts need the actual runtime root.
+  if command -v realpath >/dev/null 2>&1; then
+    _dotnet_real_bin="$(realpath "$_dotnet_bin" 2>/dev/null)"
+  fi
+
+  if [[ -n $_dotnet_real_bin && -x $_dotnet_real_bin ]]; then
+    export DOTNET_ROOT="$(dirname "$_dotnet_real_bin")"
+  else
+    export DOTNET_ROOT="$(dirname "$_dotnet_bin")"
+  fi
+
+  unset _dotnet_bin _dotnet_real_bin
+else
+  export DOTNET_ROOT="$XDG_DATA_HOME/dotnet"
+fi
 export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
+export DOTNET_CLI_TOOLS="$DOTNET_CLI_HOME/.dotnet/tools"
 export WINEPREFIX="$XDG_DATA_HOME/wine"
 export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
 export SONARLINT_USER_HOME="$XDG_DATA_HOME/sonarlint"

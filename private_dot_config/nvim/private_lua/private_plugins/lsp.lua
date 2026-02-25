@@ -41,12 +41,7 @@ return {
         "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
         { desc = "Buffer Diagnostics (Trouble)" }
       )
-      vim.keymap.set(
-        "n",
-        "<leader>cs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        { desc = "Symbols (Trouble)" }
-      )
+      vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
       vim.keymap.set(
         "n",
         "<leader>cl",

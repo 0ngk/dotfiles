@@ -26,6 +26,7 @@ return {
         kotlin = { "ktlint" },
         rust = { "rustfmt" },
         go = { "gofmt", "goimports" },
+        cs = { "csharpier" },
         ["*"] = { "trim_whitespace" },
       },
       default_format_opts = {
@@ -44,6 +45,11 @@ return {
         gleam = {
           command = "gleam",
           args = { "format", "--stdin" },
+          stdin = true,
+        },
+        cs = {
+          command = "csharpier",
+          args = { "--stdin" },
           stdin = true,
         },
       },

@@ -43,6 +43,10 @@ keymap("n", "<S-l>", ":tabnext<cr>", { silent = true }) -- 次のタブ
 keymap("n", "<S-h>", ":tabprevious<cr>", { silent = true }) -- 前のタブ
 keymap("n", "<S-t>", "<cmd>tabnew<cr>", { silent = true }) -- 新しいタブ
 
+-- Fern
+keymap("n", "<Leader>r", ":Fern . -reveal=% -drawer<cr>", { silent = true })
+keymap("n", "<Leader>e", ":Fern . -reveal=%<cr>", { silent = true })
+
 -- LSP keymaps (using snacks.picker)
 keymap("n", "<Tab>", function() Snacks.picker.lsp_definitions() end, { silent = true, desc = "LSP Go to Definition" })
 keymap("n", "<leader><Tab>", vim.lsp.buf.hover, { silent = true, desc = "LSP Hover Documentation" })
