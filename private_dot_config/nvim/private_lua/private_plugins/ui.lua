@@ -91,6 +91,8 @@ return {
     "feline-nvim/feline.nvim",
     config = function()
       local feline = require("feline")
+      local git_provider = require("feline.providers.git")
+      local lsp_provider = require("feline.providers.lsp")
       local vi_mode = require("feline.providers.vi_mode")
 
       local colors = {
@@ -118,7 +120,74 @@ return {
         COMMAND = colors.blue_soft,
       }
 
-      -- コンポーネント
+      local function has_git_info()
+        return git_provider.git_info_exists() ~= nil
+      end
+
+      local function git_diff_count(kind)
+        local gsd = vim.b.gitsigns_status_dict
+        if not gsd then
+          return 0
+        end
+        return gsd[kind] or 0
+      end
+
+      local function has_lsp()
+        return lsp_provider.is_lsp_attached()
+      end
+
+      local function has_diagnostics(severity)
+        return lsp_provider.diagnostics_exist(severity)
+      end
+
+      local lazy_status_ok, lazy_status = pcall(require, "lazy.status")
+
+      local function has_lazy_updates()
+        return lazy_status_ok and lazy_status.has_updates()
+      end
+
+      local function lazy_updates()
+        if not lazy_status_ok then
+          return ""
+        end
+        return lazy_status.updates()
+      end
+
+      local function encoding_and_eol()
+        local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
+        return string.format("%s %s", string.lower(encoding), vim.bo.fileformat)
+      end
+
+      local function is_named_buffer()
+        return vim.api.nvim_buf_get_name(0) ~= ""
+      end
+
+      local navic_ok, navic = pcall(require, "nvim-navic")
+
+      local function navic_location()
+        if not navic_ok or not navic.is_available() then
+          return ""
+        end
+        return navic.get_location()
+      end
+
+      local function has_navic_location()
+        return navic_location() ~= ""
+      end
+
+      local function winbar_file_identity()
+        local filename = vim.fn.expand("%:t")
+        if filename == "" then
+          return " [No Name] "
+        end
+
+        local icon = require("nvim-web-devicons").get_icon(filename, vim.fn.expand("%:e"), { default = true })
+        if not icon or icon == "" then
+          return " " .. filename .. " "
+        end
+        return " " .. icon .. " " .. filename .. " "
+      end
+
       local components = {
         active = {
           {}, -- 左側
@@ -133,6 +202,7 @@ return {
 
       -- 左側: viモード
       table.insert(components.active[1], {
+        name = "active_vi_mode",
         provider = function()
           return " " .. vi_mode.get_vim_mode() .. " "
         end,
@@ -156,55 +226,76 @@ return {
 
       -- 左側: ファイル情報
       table.insert(components.active[1], {
-        provider = function()
-          local filepath = vim.fn.expand("%:~:.")
-          if filepath == "" then
-            return " [No Name] "
-          end
-          local filename = vim.fn.expand("%:t")
-          local icon = require("nvim-web-devicons").get_icon(filename, vim.fn.expand("%:e"), { default = true })
-          return " " .. (icon or "") .. " " .. filepath .. " "
-        end,
+        name = "active_file_info",
+        provider = {
+          name = "file_info",
+          opts = {
+            type = "relative",
+            file_modified_icon = "●",
+            file_readonly_icon = "",
+          },
+        },
+        short_provider = {
+          name = "file_info",
+          opts = {
+            type = "relative-short",
+            file_modified_icon = "●",
+            file_readonly_icon = "",
+          },
+        },
         hl = {
           fg = colors.lavender_soft,
           bg = colors.bg,
         },
+        left_sep = " ",
+        priority = 3,
+      })
+
+      table.insert(components.active[1], {
+        name = "active_file_size",
+        provider = "file_size",
+        enabled = is_named_buffer,
+        hl = {
+          fg = colors.lavender,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        truncate_hide = true,
+        priority = -2,
       })
 
       -- 右側: Git情報
       table.insert(components.active[3], {
+        name = "active_git_branch",
         provider = "git_branch",
+        enabled = has_git_info,
         hl = {
           fg = colors.pink_soft,
           bg = colors.bg,
         },
         icon = " ",
         left_sep = " ",
+        truncate_hide = true,
+        priority = 1,
       })
 
-      -- 右側: LSP診断
       table.insert(components.active[3], {
-        provider = function()
-          local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-          if errors > 0 then
-            return " " .. errors .. " "
-          end
-          return ""
+        name = "active_git_added",
+        provider = "git_diff_added",
+        enabled = function()
+          return has_git_info() and git_diff_count("added") > 0
         end,
         hl = {
-          fg = colors.pink,
+          fg = colors.blue_light,
           bg = colors.bg,
         },
-        left_sep = " ",
       })
 
       table.insert(components.active[3], {
-        provider = function()
-          local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-          if warnings > 0 then
-            return " " .. warnings .. " "
-          end
-          return ""
+        name = "active_git_changed",
+        provider = "git_diff_changed",
+        enabled = function()
+          return has_git_info() and git_diff_count("changed") > 0
         end,
         hl = {
           fg = colors.lavender,
@@ -212,39 +303,256 @@ return {
         },
       })
 
+      table.insert(components.active[3], {
+        name = "active_git_removed",
+        provider = "git_diff_removed",
+        enabled = function()
+          return has_git_info() and git_diff_count("removed") > 0
+        end,
+        hl = {
+          fg = colors.pink,
+          bg = colors.bg,
+        },
+      })
+
+      -- 右側: LSP診断
+      table.insert(components.active[3], {
+        name = "active_diag_error",
+        provider = "diagnostic_errors",
+        enabled = function()
+          return has_diagnostics(vim.diagnostic.severity.ERROR)
+        end,
+        hl = {
+          fg = colors.pink,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        priority = 2,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_diag_warn",
+        provider = "diagnostic_warnings",
+        enabled = function()
+          return has_diagnostics(vim.diagnostic.severity.WARN)
+        end,
+        hl = {
+          fg = colors.lavender,
+          bg = colors.bg,
+        },
+        priority = 2,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_diag_hint",
+        provider = "diagnostic_hints",
+        enabled = function()
+          return has_diagnostics(vim.diagnostic.severity.HINT)
+        end,
+        hl = {
+          fg = colors.blue_light,
+          bg = colors.bg,
+        },
+        priority = 1,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_diag_info",
+        provider = "diagnostic_info",
+        enabled = function()
+          return has_diagnostics(vim.diagnostic.severity.INFO)
+        end,
+        hl = {
+          fg = colors.lavender_soft,
+          bg = colors.bg,
+        },
+        priority = 1,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_lsp_names",
+        provider = "lsp_client_names",
+        enabled = has_lsp,
+        short_provider = " LSP ",
+        hl = {
+          fg = colors.blue_soft,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        truncate_hide = true,
+        priority = -2,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_file_type",
+        provider = {
+          name = "file_type",
+          opts = {
+            filetype_icon = true,
+            case = "lowercase",
+          },
+        },
+        enabled = function()
+          return vim.bo.filetype ~= ""
+        end,
+        hl = {
+          fg = colors.lavender_soft,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        truncate_hide = true,
+        priority = -2,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_encoding",
+        provider = function()
+          return " " .. encoding_and_eol() .. " "
+        end,
+        hl = {
+          fg = colors.lavender,
+          bg = colors.bg,
+        },
+        truncate_hide = true,
+        priority = -3,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_lazy_updates",
+        provider = function()
+          return " " .. lazy_updates() .. " "
+        end,
+        enabled = has_lazy_updates,
+        hl = {
+          fg = colors.pink_soft,
+          bg = colors.bg,
+        },
+        truncate_hide = true,
+        priority = -3,
+      })
+
+      table.insert(components.active[3], {
+        name = "active_line_percentage",
+        provider = "line_percentage",
+        hl = {
+          fg = colors.blue_soft,
+          bg = colors.bg,
+          style = "bold",
+        },
+        left_sep = " ",
+        priority = 3,
+      })
+
       -- 右側: 位置情報
       table.insert(components.active[3], {
-        provider = function()
-          local line = vim.fn.line(".")
-          local col = vim.fn.col(".")
-          return string.format(" %d:%d ", line, col)
-        end,
+        name = "active_position",
+        provider = {
+          name = "position",
+          opts = {
+            format = "{line}:{col}",
+          },
+        },
         hl = {
           fg = colors.black,
           bg = colors.blue_light,
           style = "bold",
         },
-        left_sep = {
-          str = "",
+        left_sep = " ",
+        right_sep = {
+          str = " ",
           hl = {
             fg = colors.blue_light,
             bg = colors.bg,
           },
         },
+        priority = 4,
       })
 
-      -- 非アクティブウィンドウ
       table.insert(components.inactive[1], {
-        provider = function()
-          local filename = vim.fn.expand("%:t")
-          if filename == "" then
-            return " [No Name] "
-          end
-          return " " .. filename .. " "
-        end,
+        name = "inactive_file_info",
+        provider = {
+          name = "file_info",
+          opts = {
+            type = "relative-short",
+            file_modified_icon = "●",
+            file_readonly_icon = "",
+          },
+        },
+        short_provider = {
+          name = "file_info",
+          opts = {
+            type = "base-only",
+            file_modified_icon = "●",
+            file_readonly_icon = "",
+          },
+        },
         hl = {
           fg = colors.lavender_soft,
           bg = colors.bg,
+        },
+        left_sep = " ",
+        priority = 2,
+      })
+
+      table.insert(components.inactive[1], {
+        name = "inactive_file_type",
+        provider = {
+          name = "file_type",
+          opts = {
+            filetype_icon = true,
+            case = "lowercase",
+          },
+        },
+        enabled = function()
+          return vim.bo.filetype ~= ""
+        end,
+        hl = {
+          fg = colors.lavender,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        truncate_hide = true,
+        priority = -2,
+      })
+
+      table.insert(components.inactive[2], {
+        name = "inactive_line_percentage",
+        provider = "line_percentage",
+        hl = {
+          fg = colors.blue_soft,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        truncate_hide = true,
+        priority = 1,
+      })
+
+      table.insert(components.inactive[2], {
+        name = "inactive_position",
+        provider = {
+          name = "position",
+          opts = {
+            format = "{line}:{col}",
+          },
+        },
+        hl = {
+          fg = colors.lavender_soft,
+          bg = colors.bg,
+        },
+        left_sep = " ",
+        priority = 2,
+      })
+
+      -- 非アクティブウィンドウ
+      table.insert(components.inactive[2], {
+        name = "inactive_fill",
+        provider = "",
+        left_sep = {
+          str = "",
+          hl = {
+            fg = colors.bg,
+            bg = colors.bg,
+          },
         },
       })
 
@@ -269,13 +577,38 @@ return {
         active = {
           {
             {
+              name = "winbar_file",
+              provider = winbar_file_identity,
+              short_provider = " [No Name] ",
+              hl = {
+                fg = colors.blue_light,
+                bg = colors.bg,
+                style = "bold",
+              },
+              left_sep = " ",
+              priority = 2,
+            },
+            {
+              name = "winbar_navic",
               provider = function()
-                local navic = require("nvim-navic")
-                if navic.is_available() then
-                  return navic.get_location()
-                end
-                return ""
+                return " " .. navic_location()
               end,
+              enabled = has_navic_location,
+              short_provider = " 󰈔 ",
+              hl = {
+                fg = colors.lavender_soft,
+                bg = colors.bg,
+              },
+              truncate_hide = true,
+              priority = 1,
+            },
+          },
+        },
+        inactive = {
+          {
+            {
+              name = "winbar_inactive_file",
+              provider = winbar_file_identity,
               hl = {
                 fg = colors.lavender_soft,
                 bg = colors.bg,
@@ -283,9 +616,6 @@ return {
               left_sep = " ",
             },
           },
-        },
-        inactive = {
-          {},
         },
       }
       feline.winbar.setup({ components = winbar_components })

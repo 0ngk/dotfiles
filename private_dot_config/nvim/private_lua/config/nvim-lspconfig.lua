@@ -142,6 +142,12 @@ vim.lsp.config("ts_ls", {
   workspace_required = true,
 })
 
+-- Gleam
+vim.lsp.config("gleam", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+
 -- C/C++
 vim.lsp.config("clangd", {
   on_attach = on_attach,
@@ -189,24 +195,32 @@ vim.lsp.config("lua", {
 
 -- Bash
 vim.lsp.config("bashls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
   filetypes = { "sh", "bash", "zsh" },
   cmd = { "bash-language-server", "start" },
 })
 
 -- Kotlin
 vim.lsp.config("kotlin-lsp", {
+  on_attach = on_attach,
+  capabilities = capabilities,
   filetypes = { "kotlin" },
   cmd = { "kotlin-lsp", "--stdio" },
 })
 
 -- YAML
 vim.lsp.config("yaml-language-server", {
+  on_attach = on_attach,
+  capabilities = capabilities,
   filetypes = { "yaml" },
   cmd = { "yaml-language-server", "--stdio" },
 })
 
 -- C#
 vim.lsp.config("csharp-ls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
   filetypes = { "cs" },
   cmd = { "csharp-ls" },
 })

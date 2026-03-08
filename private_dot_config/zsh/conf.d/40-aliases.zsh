@@ -48,6 +48,8 @@ alias ccu="pnpm dlx ccusage"
 alias oc="opencode"
 alias venv="source ./venv/bin/activate"  # Changed from activate.fish
 alias wget="wget --hsts-file='$XDG_DATA_HOME/wget-hsts'"
-alias wine="LANG=ja_JP.UTF-8 wine"
+wine() {
+  LANG=ja_JP.UTF-8 command wine "$@"
+}
 alias mvn="mvn -gs $XDG_CONFIG_HOME/maven/settings.xml"
 alias adb='HOME="$XDG_DATA_HOME"/android adb'

@@ -22,9 +22,30 @@ return {
       },
     },
     keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
     },
   },
   {
@@ -39,9 +60,27 @@ return {
       },
     },
     keys = {
-      { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO" },
-      { "[t", function() require("todo-comments").jump_prev() end, desc = "Prev TODO" },
+      {
+        "]t",
+        function()
+          require("todo-comments").jump_next()
+        end,
+        desc = "Next TODO",
+      },
+      {
+        "[t",
+        function()
+          require("todo-comments").jump_prev()
+        end,
+        desc = "Prev TODO",
+      },
       { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "TODOs (Trouble)" },
     },
+  },
+  {
+    "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("hlslens").setup()
+    end,
   },
 }

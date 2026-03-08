@@ -92,6 +92,12 @@ export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
 export NPM_CONFIG_TMP="$XDG_RUNTIME_DIR/npm"
 
 # ========================================
+# deno
+# ========================================
+export DENO_INSTALL_ROOT="$XDG_DATA_HOME/deno"
+export DENO_INSTALL_ROOT_BIN="$DENO_INSTALL_ROOT/bin"
+
+# ========================================
 # GPG
 # ========================================
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"

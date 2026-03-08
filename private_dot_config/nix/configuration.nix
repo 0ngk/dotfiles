@@ -273,6 +273,7 @@
       "datagrip"
       "jetbrains-toolbox"
       "miniconda"
+      "mise"
 
       # Communication
       "discord"

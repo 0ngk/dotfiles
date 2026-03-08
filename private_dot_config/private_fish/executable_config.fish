@@ -129,6 +129,10 @@ fish_add_path $HOME/.local/share/pnpm
 # nodejs
 set -gx NODE_REPL_HISTORY $XDG_STATE_HOME/node_repl_history
 
+# deno
+set -gx DENO_INSTALL_ROOT $XDG_DATA_HOME/deno
+fish_add_path $DENO_INSTALL_ROOT/bin
+
 # gradle
 set -gx GRADLE_USER_HOME $XDG_DATA_HOME/gradle
 
@@ -210,7 +214,9 @@ alias rm       "gomi"
 alias rmrm     "/bin/rm"
 alias venv     "source ./venv/bin/activate.fish"
 alias wget     "wget --hsts-file='$XDG_DATA_HOME/wget-hsts'"
-alias wine     "LANG=ja_JP.UTF-8 wine"
+function wine --description "Run wine with Japanese locale"
+    env LANG=ja_JP.UTF-8 command wine $argv
+end
 alias y        "yarn"
 alias yz       "yazi"
 
