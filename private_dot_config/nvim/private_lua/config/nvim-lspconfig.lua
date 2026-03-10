@@ -232,6 +232,13 @@ vim.lsp.config("csharp-ls", {
 --   cmd = { "erlls" },
 -- })
 
+-- Elixir
+vim.lsp.config("expert", {
+  cmd = { "expert", "--stdio" },
+  root_markers = { "mix.exs", ".git" },
+  filetypes = { "elixir", "eelixir", "heex" },
+})
+
 -- Enable all configured LSP servers
 vim.lsp.enable({
   "biome",
@@ -251,4 +258,5 @@ vim.lsp.enable({
   "yaml-language-server",
   "csharp-ls",
   "erlls",
+  "expert",
 })

@@ -27,6 +27,7 @@ return {
         rust = { "rustfmt" },
         go = { "gofmt", "goimports" },
         cs = { "csharpier" },
+        elixir = { "mix" },
         ["*"] = { "trim_whitespace" },
       },
       default_format_opts = {
@@ -50,6 +51,11 @@ return {
         cs = {
           command = "csharpier",
           args = { "--stdin" },
+          stdin = true,
+        },
+        mix = {
+          command = "mix",
+          args = { "format", "--stdin-filename", "$FILENAME", "-" },
           stdin = true,
         },
       },

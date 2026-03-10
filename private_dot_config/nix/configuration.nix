@@ -85,6 +85,7 @@
     gradle
 
     # Language servers
+    tree-sitter
     typescript-language-server
     gopls
     rust-analyzer
@@ -248,6 +249,7 @@
       "winetricks"
       "JetBrains/utils/kotlin-lsp"
       "openjdk@21"
+      "mise"
     ];
 
     # Cask applications
@@ -273,7 +275,6 @@
       "datagrip"
       "jetbrains-toolbox"
       "miniconda"
-      "mise"
 
       # Communication
       "discord"
@@ -309,6 +310,7 @@
       "vlc"
       "spotify"
       "obs"
+      "blender"
 
       # LLMs
       "claude"

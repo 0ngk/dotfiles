@@ -41,6 +41,9 @@ function __update_random_prompt --on-event fish_prompt
     set -g theme_newline_prompt (begin; set_color --bold brcyan; printf '%s\n' (__random_prompt_message); set_color normal; printf '\n'; set_color --bold brcyan; printf '%s' '\n> '; set_color normal; end)
 end
 
+
+fish_add_path $HOME/.local/bin
+
 # xdg
 set -gx XDG_DATA_HOME   $HOME/.local/share
 set -gx XDG_CONFIG_HOME $HOME/.config
@@ -237,3 +240,4 @@ end
 
 # zoxide (must be placed in the last line)
 zoxide init fish | source
+mise activate fish | source
