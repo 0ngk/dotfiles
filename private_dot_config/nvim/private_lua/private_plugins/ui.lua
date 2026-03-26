@@ -655,6 +655,12 @@ return {
         tail = "TabLineHeadCute",
       }
 
+      vim.api.nvim_create_autocmd({ "BufModifiedSet", "BufWritePost" }, {
+        callback = function()
+          vim.cmd("redrawtabline")
+        end,
+      })
+
       require("tabby").setup({
         line = function(line)
           return {
@@ -664,9 +670,17 @@ return {
             },
             line.tabs().foreach(function(tab)
               local hl = tab.is_current() and theme.current_tab or theme.tab
+              local modified = false
+              for _, w in ipairs(line.wins_in_tab(tab.id).wins) do
+                if w.buf().is_changed() then
+                  modified = true
+                  break
+                end
+              end
               return {
                 line.sep("", hl, theme.fill),
                 tab.is_current() and " " or " ",
+                modified and "● " or "",
                 tab.number(),
                 " ",
                 tab.name(),
@@ -682,7 +696,8 @@ return {
               return {
                 line.sep("", theme.win, theme.fill),
                 win.is_current() and " " or " ",
-                win.buf_name(),
+                win.buf().is_changed() and "● " or "",
+                { win.buf_name(), lo = { max_width = 20 } },
                 " ",
                 line.sep("", theme.win, theme.fill),
                 hl = theme.win,

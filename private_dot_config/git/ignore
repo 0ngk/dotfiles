@@ -1,5 +1,7 @@
 # General
 .env
+.env.*
+!.env.example
 
 # macOS
 .DS_Store
@@ -10,4 +12,7 @@
 # JS/TS
 node_modules/
 
+# Agents
+
 **/.claude/settings.local.json
+.serena/

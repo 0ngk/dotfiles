@@ -10,6 +10,7 @@ return {
   { "github/copilot.vim" },
   {
     "olimorris/codecompanion.nvim",
+    commit = "558518f8d78a44198cd428f6bf8bf48bfa38d76d",
     config = function()
       require("codecompanion").setup({
         adapters = {

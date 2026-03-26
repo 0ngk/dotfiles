@@ -71,10 +71,10 @@
     csharpier
 
     # Language toolchains & package managers
+    ni
     pnpm
     typescript
     rebar3
-    gleam
     uv
     deno
     pipx
@@ -151,6 +151,9 @@
     whois
     powershell
     xdg-ninja
+
+    # LLMs
+    ollama
   ];
 
   # System defaults
@@ -250,6 +253,7 @@
       "JetBrains/utils/kotlin-lsp"
       "openjdk@21"
       "mise"
+      "gleam"
     ];
 
     # Cask applications
@@ -275,6 +279,7 @@
       "datagrip"
       "jetbrains-toolbox"
       "miniconda"
+      "cursor-cli"
 
       # Communication
       "discord"
@@ -291,6 +296,7 @@
       "alt-tab"
       "aerospace"
       "amethyst"
+      "wine@staging"
 
       # Security
       "1password"
@@ -300,6 +306,7 @@
       # Virtualization
       "orbstack"
       "utm"
+      "crossover"
 
       # Productivity
       "obsidian"
