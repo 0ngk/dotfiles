@@ -9,8 +9,12 @@ return {
           local keymap = vim.keymap.set
 
           -- Navigation
-          keymap("n", "g]", function() gs.nav_hunk("next") end, { buffer = bufnr, desc = "Next Hunk" })
-          keymap("n", "g[", function() gs.nav_hunk("prev") end, { buffer = bufnr, desc = "Prev Hunk" })
+          keymap("n", "g]", function()
+            gs.nav_hunk("next")
+          end, { buffer = bufnr, desc = "Next Hunk" })
+          keymap("n", "g[", function()
+            gs.nav_hunk("prev")
+          end, { buffer = bufnr, desc = "Prev Hunk" })
 
           -- Toggle
           keymap("n", "gh", gs.toggle_linehl, { buffer = bufnr, desc = "Toggle Line Highlight" })

@@ -70,6 +70,8 @@ return {
       vim.cmd("colorscheme carbonfox")
       vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
       vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "BlinkCmpDocBorder", { link = "FloatBorder" })
+      vim.api.nvim_set_hl(0, "NoicePopupBorder", { link = "FloatBorder" })
       vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "NONE" })
       vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "NONE" })
       vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = "NONE" })
@@ -94,6 +96,7 @@ return {
       local git_provider = require("feline.providers.git")
       local lsp_provider = require("feline.providers.lsp")
       local vi_mode = require("feline.providers.vi_mode")
+      local workspaces = require("config.tab_workspaces")
 
       local colors = {
         pink = "#f3a0bb",
@@ -110,6 +113,16 @@ return {
         black = "#000000",
       }
 
+      vim.api.nvim_set_hl(0, "WorkspaceStatuslineCurrent", {
+        bg = colors.pink_light,
+        bold = true,
+        fg = colors.black,
+      })
+      vim.api.nvim_set_hl(0, "WorkspaceStatuslineInactive", {
+        bg = colors.bg,
+        fg = colors.lavender_soft,
+      })
+
       -- viモードカラー
       local vi_mode_colors = {
         NORMAL = colors.blue_light,
@@ -119,6 +132,24 @@ return {
         REPLACE = colors.pink,
         COMMAND = colors.blue_soft,
       }
+
+      local function current_buffer_lsp_clients()
+        return vim.lsp.get_clients({ bufnr = 0 })
+      end
+
+      lsp_provider.is_lsp_attached = function()
+        return next(current_buffer_lsp_clients()) ~= nil
+      end
+
+      lsp_provider.lsp_client_names = function()
+        local client_names = {}
+
+        for _, client in ipairs(current_buffer_lsp_clients()) do
+          client_names[#client_names + 1] = client.name
+        end
+
+        return table.concat(client_names, " "), " "
+      end
 
       local function has_git_info()
         return git_provider.git_info_exists() ~= nil
@@ -262,6 +293,20 @@ return {
         left_sep = " ",
         truncate_hide = true,
         priority = -2,
+      })
+
+      table.insert(components.active[2], {
+        name = "active_workspace_strip",
+        provider = function()
+          return workspaces.workspace_strip()
+        end,
+        hl = {
+          bg = colors.bg,
+          fg = colors.lavender_soft,
+        },
+        left_sep = " ",
+        right_sep = " ",
+        priority = 5,
       })
 
       -- 右側: Git情報
@@ -622,95 +667,191 @@ return {
     end,
   },
   {
-    "nanozuki/tabby.nvim",
+    "akinsho/bufferline.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      vim.api.nvim_set_hl(0, "TabLineCute", {
-        fg = "#6b8dd6",
+      local groups = require("bufferline.groups")
+      local workspaces = require("config.tab_workspaces")
+      local colors = {
+        pink = "#f3a0bb",
+        pink_light = "#ffc4d6",
+        blue_light = "#6b8dd6",
+        lavender = "#d6bddb",
+        lavender_soft = "#c9b3ce",
+        white = "#ffffff",
         bg = "NONE",
-      })
-      vim.api.nvim_set_hl(0, "TabLineSelCute", {
-        fg = "#ffffff",
-        bg = "#f3a0bb",
-        bold = true,
-      })
-      vim.api.nvim_set_hl(0, "TabLineFillCute", {
-        bg = "NONE",
-      })
-      vim.api.nvim_set_hl(0, "TabLineWinCute", {
-        fg = "#d6bddb",
-        bg = "NONE",
-      })
-      vim.api.nvim_set_hl(0, "TabLineHeadCute", {
-        fg = "#ffffff",
-        bg = "#d6bddb",
-        bold = true,
-      })
-
-      local theme = {
-        fill = "TabLineFillCute",
-        head = "TabLineHeadCute",
-        current_tab = "TabLineSelCute",
-        tab = "TabLineCute",
-        win = "TabLineWinCute",
-        tail = "TabLineHeadCute",
       }
 
-      vim.api.nvim_create_autocmd({ "BufModifiedSet", "BufWritePost" }, {
-        callback = function()
-          vim.cmd("redrawtabline")
-        end,
-      })
-
-      require("tabby").setup({
-        line = function(line)
-          return {
-            {
-              { " 󰙴 ", hl = theme.head },
-              line.sep("", theme.head, theme.fill),
+      require("bufferline").setup({
+        highlights = {
+          fill = {
+            bg = colors.bg,
+          },
+          background = {
+            fg = colors.lavender,
+            bg = colors.bg,
+          },
+          buffer_visible = {
+            fg = colors.lavender,
+            bg = colors.bg,
+          },
+          buffer_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          numbers = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          numbers_visible = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          numbers_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          diagnostic = {
+            fg = colors.blue_light,
+            bg = colors.bg,
+          },
+          diagnostic_visible = {
+            fg = colors.blue_light,
+            bg = colors.bg,
+          },
+          diagnostic_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          error = {
+            fg = colors.pink_light,
+            bg = colors.bg,
+          },
+          error_visible = {
+            fg = colors.pink_light,
+            bg = colors.bg,
+          },
+          error_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          warning = {
+            fg = colors.lavender,
+            bg = colors.bg,
+          },
+          warning_visible = {
+            fg = colors.lavender,
+            bg = colors.bg,
+          },
+          warning_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          info = {
+            fg = colors.blue_light,
+            bg = colors.bg,
+          },
+          info_visible = {
+            fg = colors.blue_light,
+            bg = colors.bg,
+          },
+          info_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          hint = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          hint_visible = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          hint_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+            bold = true,
+          },
+          separator = {
+            fg = colors.bg,
+            bg = colors.bg,
+          },
+          separator_visible = {
+            fg = colors.bg,
+            bg = colors.bg,
+          },
+          separator_selected = {
+            fg = colors.bg,
+            bg = colors.pink,
+          },
+          close_button = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          close_button_visible = {
+            fg = colors.lavender_soft,
+            bg = colors.bg,
+          },
+          close_button_selected = {
+            fg = colors.white,
+            bg = colors.pink,
+          },
+        },
+        options = {
+          mode = "buffers",
+          numbers = "ordinal",
+          diagnostics = "nvim_lsp",
+          always_show_bufferline = true,
+          persist_buffer_sort = true,
+          move_wraps_at_ends = false,
+          close_command = function(bufnr)
+            workspaces.close_workspace_buffer(bufnr)
+          end,
+          right_mouse_command = function(bufnr)
+            workspaces.close_workspace_buffer(bufnr)
+          end,
+          buffer_close_icon = "󰅖",
+          modified_icon = "●",
+          separator_style = "thin",
+          hover = {
+            enabled = true,
+            delay = 200,
+            reveal = { "close" },
+          },
+          diagnostics_indicator = function(count, level)
+            local icon = level:match("error") and " " or " "
+            return " " .. icon .. count
+          end,
+          custom_filter = function(bufnr)
+            return workspaces.is_buffer_in_workspace(bufnr)
+          end,
+          custom_areas = {
+            right = function()
+              return workspaces.bufferline_custom_area()
+            end,
+          },
+          groups = {
+            items = {
+              groups.builtin.pinned:with({ icon = "󰐃 " }),
+              groups.builtin.ungrouped,
             },
-            line.tabs().foreach(function(tab)
-              local hl = tab.is_current() and theme.current_tab or theme.tab
-              local modified = false
-              for _, w in ipairs(line.wins_in_tab(tab.id).wins) do
-                if w.buf().is_changed() then
-                  modified = true
-                  break
-                end
-              end
-              return {
-                line.sep("", hl, theme.fill),
-                tab.is_current() and " " or " ",
-                modified and "● " or "",
-                tab.number(),
-                " ",
-                tab.name(),
-                " ",
-                tab.close_btn("󰅖"),
-                line.sep("", hl, theme.fill),
-                hl = hl,
-                margin = " ",
-              }
-            end),
-            line.spacer(),
-            line.wins_in_tab(line.api.get_current_tab()).foreach(function(win)
-              return {
-                line.sep("", theme.win, theme.fill),
-                win.is_current() and " " or " ",
-                win.buf().is_changed() and "● " or "",
-                { win.buf_name(), lo = { max_width = 20 } },
-                " ",
-                line.sep("", theme.win, theme.fill),
-                hl = theme.win,
-                margin = " ",
-              }
-            end),
+          },
+          offsets = {
             {
-              line.sep("", theme.tail, theme.fill),
-              { " 󰊠 ", hl = theme.tail },
+              filetype = "fern",
+              text = "Explorer",
+              text_align = "left",
+              highlight = "Directory",
+              separator = true,
             },
-            hl = theme.fill,
-          }
-        end,
+          },
+        },
       })
     end,
   },
@@ -731,6 +872,13 @@ return {
           override = {
             ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
             ["vim.lsp.util.stylize_markdown"] = true,
+          },
+        },
+        views = {
+          hover = {
+            border = {
+              style = "single",
+            },
           },
         },
         presets = {

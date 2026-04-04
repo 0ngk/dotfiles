@@ -254,6 +254,7 @@
       "openjdk@21"
       "mise"
       "gleam"
+      "unar"
     ];
 
     # Cask applications
@@ -299,14 +300,14 @@
       "wine@staging"
 
       # Security
-      "1password"
+      # "1password"
       "bitwarden"
       "burp-suite"
 
       # Virtualization
       "orbstack"
       "utm"
-      "crossover"
+      # "crossover"
 
       # Productivity
       "obsidian"
