@@ -136,14 +136,6 @@
                     "to": [{ "key_code": "left_alt" }]
                 },
                 {
-                    "from": { "key_code": "non_us_backslash" },
-                    "to": [{ "key_code": "backslash" }]
-                },
-                {
-                    "from": { "key_code": "right_command" },
-                    "to": [{ "key_code": "delete_or_backspace" }]
-                },
-                {
                     "from": { "key_code": "left_shift" },
                     "to": [
                         {
@@ -151,6 +143,14 @@
                             "modifiers": ["left_control"]
                         }
                     ]
+                },
+                {
+                    "from": { "key_code": "non_us_backslash" },
+                    "to": [{ "key_code": "backslash" }]
+                },
+                {
+                    "from": { "key_code": "right_command" },
+                    "to": [{ "key_code": "delete_or_backspace" }]
                 }
             ],
             "virtual_hid_keyboard": { "keyboard_type_v2": "jis" }

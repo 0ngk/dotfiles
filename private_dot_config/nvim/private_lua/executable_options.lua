@@ -5,6 +5,7 @@ local g = vim.g
 opt.updatetime = 100
 opt.cursorline = true
 opt.cursorcolumn = true
+opt.laststatus = 3
 opt.termguicolors = true
 opt.clipboard = "unnamedplus"
 opt.viminfofile = "NONE"
@@ -31,4 +32,7 @@ opt.winblend = 40 -- ウィンドウの不透明度
 opt.fillchars = { eob = " " }
 
 g.mapleader = " "
-g["denops#deno"] = vim.fn.trim(vim.fn.system("which deno"))
+local deno = vim.fn.exepath("deno")
+if deno ~= "" then
+  g["denops#deno"] = deno
+end

@@ -145,9 +145,13 @@ config.keys = {
 	{ key = "8", mods = "CMD", action = wezterm.action.ActivateTab(7) },
 	{ key = "9", mods = "CMD", action = wezterm.action.ActivateTab(-1) },
 
-	-- Move tabs left/right
+	-- Move tabs left/right (cover mapped normalization differences for bracket/brace keys)
 	{ key = "[", mods = "CMD|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
 	{ key = "]", mods = "CMD|SHIFT", action = wezterm.action.MoveTabRelative(1) },
+	{ key = "{", mods = "CMD", action = wezterm.action.MoveTabRelative(-1) },
+	{ key = "}", mods = "CMD", action = wezterm.action.MoveTabRelative(1) },
+	{ key = "{", mods = "CMD|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
+	{ key = "}", mods = "CMD|SHIFT", action = wezterm.action.MoveTabRelative(1) },
 
 	-- Session management (resurrect)
 	{

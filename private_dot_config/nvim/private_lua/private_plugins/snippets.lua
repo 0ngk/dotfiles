@@ -1,6 +1,7 @@
 return {
   {
     "uga-rosa/denippet.vim",
+    event = "InsertEnter",
     dependencies = { "vim-denops/denops.vim" },
     config = function()
       local function load_snippets_dir(dir)

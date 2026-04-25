@@ -156,6 +156,30 @@ vim.lsp.config("html", {
 vim.lsp.config("ts_ls", {
   on_attach = on_attach,
   capabilities = capabilities,
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
   root_dir = function(bufnr, on_dir)
     local fname = vim.api.nvim_buf_get_name(bufnr)
     -- denols との競合を避けるため、deno.json があるプロジェクトでは起動しない
@@ -172,9 +196,13 @@ vim.lsp.config("ts_ls", {
 })
 
 -- Gleam
+local gleam_dev = vim.fn.expand("~/.local/opt/gleam-main/bin/gleam")
+local gleam_cmd = vim.fn.executable(gleam_dev) == 1 and { gleam_dev, "lsp" } or { "gleam", "lsp" }
+
 vim.lsp.config("gleam", {
   on_attach = on_attach,
   capabilities = capabilities,
+  cmd = gleam_cmd,
 })
 
 -- C/C++

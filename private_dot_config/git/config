@@ -17,6 +17,7 @@
   diffnpst = !git --no-pager diff --staged
   ds       = diff --staged
   ev       = !git add -A && git commit -m "wip" && git push origin HEAD
+  i        = init
   ic       = !git commit --allow-empty -m "Initial commit"
   lognp    = !git --no-pager log
   s        = status
@@ -50,6 +51,7 @@
 
 [core]
   quotepath = false
+	excludesFile = /Users/rei/.config/git/ignore
 
 [init]
   defaultBranch = main
@@ -68,3 +70,9 @@
 
 [merge]
   tool = neovimdiff
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

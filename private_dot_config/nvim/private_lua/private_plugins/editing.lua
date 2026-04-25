@@ -1,6 +1,7 @@
 return {
   {
     "matze/vim-move",
+    lazy = false,
     config = function()
       vim.g.move_key_modifier = "A"
       vim.g.move_key_modifier_visualmode = "A"
@@ -8,7 +9,7 @@ return {
   },
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
+    lazy = false,
     opts = {
       labels = "asdfghjklqwertyuiopzxcvbnm",
       highlight = {
@@ -50,7 +51,7 @@ return {
   },
   {
     "folke/todo-comments.nvim",
-    event = "VeryLazy",
+    lazy = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       keywords = {
@@ -79,6 +80,7 @@ return {
   },
   {
     "kevinhwang91/nvim-hlslens",
+    lazy = false,
     config = function()
       require("hlslens").setup()
     end,

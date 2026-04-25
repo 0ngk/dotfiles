@@ -1,20 +1,21 @@
 return {
   -- Core Utilities
-  { "dstein64/vim-startuptime" },
+  { "dstein64/vim-startuptime", cmd = "StartupTime" },
   { "vim-denops/denops.vim" },
   { "nvim-lua/plenary.nvim" },
   { "tani/vim-artemis" }, -- Compatibility between Vim and Neovim
-  { "tpope/vim-surround" },
-  { "jghauser/mkdir.nvim" },
+  { "tpope/vim-surround", lazy = false },
+  { "jghauser/mkdir.nvim", lazy = false },
   {
     "nacro90/numb.nvim", -- Line number preview
+    lazy = false,
     config = function()
       require("numb").setup()
     end,
   },
-  { "uga-rosa/ccc.nvim" }, -- Color picker
-  { "brianhuster/live-preview.nvim" },
-  { "wakatime/vim-wakatime", lazy = false },
+  { "uga-rosa/ccc.nvim", lazy = false }, -- Color picker
+  { "brianhuster/live-preview.nvim", cmd = "LivePreview" },
+  { "wakatime/vim-wakatime", event = "VeryLazy" },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",

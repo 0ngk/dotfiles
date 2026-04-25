@@ -19,6 +19,8 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
+    rsync
+
     # Editors
     vim
     neovim
@@ -60,8 +62,7 @@
     gcc
     # gdb
     nodejs
-    python313
-    python314
+    python315
     go
     erlang
     php
@@ -281,6 +282,7 @@
       "jetbrains-toolbox"
       "miniconda"
       "cursor-cli"
+      "sourcetree"
 
       # Communication
       "discord"
@@ -305,7 +307,7 @@
       "burp-suite"
 
       # Virtualization
-      "orbstack"
+      # "orbstack"
       "utm"
       # "crossover"
 

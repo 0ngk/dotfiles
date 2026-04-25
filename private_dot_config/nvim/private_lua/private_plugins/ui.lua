@@ -1,7 +1,8 @@
 return {
-  { "echasnovski/mini.icons" },
+  { "echasnovski/mini.icons", event = "VeryLazy" },
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "markdown.mdx", "Avante", "codecompanion" },
     config = function()
       require("render-markdown").setup({
         opts = {
@@ -11,10 +12,12 @@ return {
       })
     end,
   },
-  { "nvim-tree/nvim-web-devicons" },
+  { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
   { "MunifTanjim/nui.nvim" },
   {
     "EdenEast/nightfox.nvim",
+    lazy = false,
+    priority = 1000,
     config = function()
       require("nightfox").setup({
         options = {
@@ -91,6 +94,7 @@ return {
   },
   {
     "feline-nvim/feline.nvim",
+    event = "VeryLazy",
     config = function()
       local feline = require("feline")
       local git_provider = require("feline.providers.git")
@@ -309,8 +313,8 @@ return {
         priority = 5,
       })
 
-      -- 右側: Git情報
-      table.insert(components.active[3], {
+      -- 左側: Git情報
+      table.insert(components.active[1], {
         name = "active_git_branch",
         provider = "git_branch",
         enabled = has_git_info,
@@ -324,7 +328,7 @@ return {
         priority = 1,
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_git_added",
         provider = "git_diff_added",
         enabled = function()
@@ -336,7 +340,7 @@ return {
         },
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_git_changed",
         provider = "git_diff_changed",
         enabled = function()
@@ -348,7 +352,7 @@ return {
         },
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_git_removed",
         provider = "git_diff_removed",
         enabled = function()
@@ -360,8 +364,8 @@ return {
         },
       })
 
-      -- 右側: LSP診断
-      table.insert(components.active[3], {
+      -- 左側: LSP診断
+      table.insert(components.active[1], {
         name = "active_diag_error",
         provider = "diagnostic_errors",
         enabled = function()
@@ -375,7 +379,7 @@ return {
         priority = 2,
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_diag_warn",
         provider = "diagnostic_warnings",
         enabled = function()
@@ -388,7 +392,7 @@ return {
         priority = 2,
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_diag_hint",
         provider = "diagnostic_hints",
         enabled = function()
@@ -401,7 +405,7 @@ return {
         priority = 1,
       })
 
-      table.insert(components.active[3], {
+      table.insert(components.active[1], {
         name = "active_diag_info",
         provider = "diagnostic_info",
         enabled = function()
@@ -668,6 +672,7 @@ return {
   },
   {
     "akinsho/bufferline.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local groups = require("bufferline.groups")
@@ -829,7 +834,7 @@ return {
             return " " .. icon .. count
           end,
           custom_filter = function(bufnr)
-            return workspaces.is_buffer_in_workspace(bufnr)
+            return workspaces.is_buffer_in_window(bufnr)
           end,
           custom_areas = {
             right = function()
@@ -857,6 +862,7 @@ return {
   },
   {
     "folke/noice.nvim",
+    lazy = false,
     config = function()
       require("noice").setup({
         cmdline = {

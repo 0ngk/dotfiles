@@ -1,15 +1,16 @@
 return {
   -- Common Lisp
-  { "vlime/vlime", rtp = "vim" },
+  { "vlime/vlime", rtp = "vim", ft = "lisp" },
 
   -- Clojure
   { "tpope/vim-fireplace", ft = "clojure" },
 
   -- Rust
-  { "rust-lang/rust.vim" },
+  { "rust-lang/rust.vim", ft = "rust" },
   {
     "cordx56/rustowl",
     version = "*",
+    ft = "rust",
     build = "cargo binstall rustowl",
     opts = {
       client = {
@@ -23,6 +24,13 @@ return {
   },
 
   -- Go
-  { "ray-x/go.nvim" },
+  {
+    "ray-x/go.nvim",
+    ft = { "go", "gomod", "gowork", "gotmpl" },
+    dependencies = { "ray-x/guihua.lua" },
+    config = function()
+      require("go").setup()
+    end,
+  },
   { "ray-x/guihua.lua" },
 }

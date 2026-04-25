@@ -1,16 +1,24 @@
 return {
   {
     "ravitemer/mcphub.nvim",
+    cmd = "MCPHub",
     config = function()
       require("mcphub").setup({
         cmd = vim.fn.expand("~") .. "/.local/share/pnpm/mcp-hub",
       })
     end,
   },
-  { "github/copilot.vim" },
+  { "github/copilot.vim", event = "InsertEnter" },
   {
     "olimorris/codecompanion.nvim",
     commit = "558518f8d78a44198cd428f6bf8bf48bfa38d76d",
+    cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionAction" },
+    dependencies = {
+      "github/copilot.vim",
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "ravitemer/mcphub.nvim",
+    },
     config = function()
       require("codecompanion").setup({
         adapters = {

@@ -1,6 +1,7 @@
 return {
   {
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    event = "LspAttach",
     config = function()
       require("lsp_lines").setup()
       vim.diagnostic.config({
@@ -11,12 +12,14 @@ return {
   },
   {
     "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonLog" },
     config = function()
       require("mason").setup()
     end,
   },
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("config.nvim-lspconfig")
     end,
@@ -24,6 +27,7 @@ return {
   { "SmiteshP/nvim-navic" },
   {
     "folke/trouble.nvim",
+    event = "VeryLazy",
     config = function()
       local trouble = require("trouble")
       trouble.setup({

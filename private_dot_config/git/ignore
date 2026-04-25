@@ -1,4 +1,5 @@
 # General
+*~
 .env
 .env.*
 !.env.example
@@ -15,4 +16,4 @@ node_modules/
 # Agents
 
 **/.claude/settings.local.json
-.serena/
+**/.serena/

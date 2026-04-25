@@ -1,6 +1,16 @@
 return {
   {
     "lambdalisue/fern.vim",
+    lazy = false,
+    dependencies = {
+      "lambdalisue/glyph-palette.vim",
+      "lambdalisue/nerdfont.vim",
+      "lambdalisue/fern-renderer-nerdfont.vim",
+      "lambdalisue/fern-git-status.vim",
+      "yuki-yano/fern-preview.vim",
+      "lambdalisue/fern-hijack.vim",
+      "lambdalisue/fern-bookmark.vim",
+    },
     init = function()
       local g = vim.g
       g["fern#renderer"] = "nerdfont"
@@ -10,8 +20,8 @@ return {
       vim.cmd([[
         augroup my-glyph-palette
           autocmd! *
-          autocmd FileType fern call glyph_palette#apply()
-          autocmd FileType nerdtree,startify call glyph_palette#apply()
+          autocmd FileType fern if exists('*glyph_palette#apply') | call glyph_palette#apply() | endif
+          autocmd FileType nerdtree,startify if exists('*glyph_palette#apply') | call glyph_palette#apply() | endif
         augroup END
 
         function! s:fern_settings() abort
@@ -23,16 +33,14 @@ return {
 
         augroup fern-settings
           autocmd!
+          autocmd FileType fern if exists('*fern_git_status#init') | call fern_git_status#init() | endif
           autocmd FileType fern call s:fern_settings()
         augroup END
       ]])
+
+      if vim.fn.exists("*fern_git_status#init") == 1 then
+        vim.fn["fern_git_status#init"]()
+      end
     end,
   },
-  { "lambdalisue/fern-renderer-nerdfont.vim", dependencies = { "lambdalisue/fern.vim" } },
-  { "lambdalisue/nerdfont.vim" },
-  { "lambdalisue/glyph-palette.vim" },
-  { "lambdalisue/fern-git-status.vim", dependencies = { "lambdalisue/fern.vim" } },
-  { "yuki-yano/fern-preview.vim", dependencies = { "lambdalisue/fern.vim" } },
-  { "lambdalisue/fern-hijack.vim", dependencies = { "lambdalisue/fern.vim" } },
-  { "lambdalisue/fern-bookmark.vim", dependencies = { "lambdalisue/fern.vim" } },
 }

@@ -11,6 +11,7 @@ return {
   {
     "saghen/blink.cmp",
     version = "1.*",
+    event = "InsertEnter",
     dependencies = { "onsails/lspkind.nvim" },
     config = function()
       require("blink.cmp").setup({
@@ -52,11 +53,11 @@ return {
   },
   {
     "cohama/lexima.vim",
-    config = function()
-      local artemis = require("artemis")
-    end,
+    lazy = false,
+    dependencies = { "tani/vim-artemis" },
   },
   {
     "mattn/emmet-vim",
+    ft = { "html", "css", "javascriptreact", "typescriptreact", "vue", "svelte" },
   },
 }

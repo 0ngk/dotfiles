@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    lazy = false,
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("nvim-treesitter").setup({})
       require("nvim-treesitter").install({ "gleam" })
@@ -17,6 +17,7 @@ return {
   },
   {
     "windwp/nvim-ts-autotag",
+    ft = { "html", "javascriptreact", "typescriptreact", "vue", "svelte", "xml" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
       opts = {
@@ -31,6 +32,6 @@ return {
       },
     },
   },
-  { "JoosepAlviste/nvim-ts-context-commentstring" },
-  { "HiPhish/rainbow-delimiters.nvim" },
+  { "JoosepAlviste/nvim-ts-context-commentstring", event = { "BufReadPost", "BufNewFile" } },
+  { "HiPhish/rainbow-delimiters.nvim", lazy = false },
 }
