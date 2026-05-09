@@ -1,0 +1,45 @@
+# general
+prefix_rule(pattern=["date", "*"], decision="allow")
+prefix_rule(pattern=["sed", "s#^./##"], decision="allow")
+prefix_rule(pattern=["sort"], decision="allow")
+prefix_rule(pattern=["ps", "aux"], decision="allow")
+
+# wezterm
+prefix_rule(pattern=["wezterm", "-V"], decision="allow")
+prefix_rule(pattern=["wezterm", "show-keys", "--lua"], decision="allow")
+
+# homebrew
+prefix_rule(pattern=["brew", "--list"], decision="allow")
+prefix_rule(pattern=["brew", "list"], decision="allow")
+prefix_rule(pattern=["brew", "info"], decision="allow")
+prefix_rule(pattern=["brew", "info", "--cask"], decision="allow")
+
+# git
+prefix_rule(pattern=["git", "rev-parse", "--abbrev-ref", "HEAD"], decision="allow")
+prefix_rule(pattern=["git", "rev-parse", "--show-toplevel"], decision="allow")
+
+# gh
+prefix_rule(pattern=["gh", "view"], decision="allow")
+
+# nix
+prefix_rule(pattern=["/run/current-system/sw/bin/zsh", "-lc", "nix profile list 2>/dev/null | sed -n '1,120p'"], decision="allow")
+
+# dotnet
+prefix_rule(pattern=["dotnet", "build"], decision="allow")
+prefix_rule(pattern=["dotnet", "test"], decision="allow")
+
+# python
+prefix_rule(pattern=["python", "/Users/rei/.claude/skills/ui-ux-pro-max/scripts/search.py", "--help"], decision="allow")
+
+# lua
+prefix_rule(pattern=["luac", "-p"], decision="allow")
+prefix_rule(pattern=["stylua"], decision="allow")
+prefix_rule(pattern=["stylua", "--indent-type", "Spaces", "--indent-width", "2"], decision="allow")
+
+# pnpm
+prefix_rule(pattern=["pnpm", "exec", "biome"], decision="allow")
+prefix_rule(pattern=["pnpm", "test"], decision="allow")
+
+# nvim
+prefix_rule(pattern=["nvim", "--headless"], decision="allow")
+prefix_rule(pattern=["nvim", "--version"], decision="allow")
