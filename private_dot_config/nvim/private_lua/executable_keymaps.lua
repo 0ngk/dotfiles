@@ -1,5 +1,6 @@
 local keymap = vim.keymap.set
 local workspaces = require("config.tab_workspaces")
+require("config.fsharp_runtime").setup()
 
 local function smart_close()
   local current_buf = vim.api.nvim_get_current_buf()
@@ -153,6 +154,10 @@ keymap("n", "<Leader>e", "<cmd>Fern . -reveal=%<cr>", { silent = true })
 
 -- LSP keymaps (using snacks.picker)
 keymap("n", "<Tab>", function()
+  if vim.bo.filetype == "fsharp" then
+    require("config.fsharp_definition").go_to_definition_with_fallback()
+    return
+  end
   require("snacks").picker.lsp_definitions()
 end, { silent = true, desc = "LSP Go to Definition" })
 keymap("n", "<leader><Tab>", function()
@@ -167,6 +172,40 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "rust",
   callback = function()
     keymap({ "i", "n" }, "<F11>", ":Cargo run<cr>")
+  end,
+})
+
+-- F#
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fsharp",
+  callback = function(args)
+    keymap("n", "<F6>", "<cmd>FSharpRun<cr>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "F# Run Project",
+    })
+    keymap("n", "<F7>", "<cmd>FSharpRunLast<cr>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "F# Run Last",
+    })
+  end,
+})
+
+-- C# / Razor
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "cs", "razor" },
+  callback = function(args)
+    keymap("n", "<leader>ct", "<cmd>Roslyn target<cr>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "Roslyn Select Target",
+    })
+    keymap("n", "<leader>cR", "<cmd>Roslyn restart<cr>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "Roslyn Restart",
+    })
   end,
 })
 

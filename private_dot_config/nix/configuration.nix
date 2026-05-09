@@ -19,109 +19,131 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
-    rsync
-
     # Editors
-    vim
-    neovim
     emacs
     helix
+    vim
 
     # Version control
-    git
-    gh
-    git-filter-repo
+    commitizen
     delta
     difftastic
+    gh
+    git
+    git-filter-repo
     lazygit
     mercurial
-    commitizen
 
     # Shell & terminal
     bat
     bottom
-    dust
-    fd
-    ripgrep
-    fzf
-    tree
-    procs
-    zoxide
-    tmux
-    screen
-    yazi
-    eza
-    lsd
-    tre-command
-    gomi
-    terminal-notifier
     byobu
+    dust
+    eza
+    fd
+    fzf
+    gomi
+    lsd
+    procs
+    ripgrep
+    screen
+    terminal-notifier
+    tmux
+    tre-command
+    tree
+    yazi
+    zoxide
     # kitty
 
-    # Language runtimes & compilers
+    # C/C++ ecosystem
+    clang-tools
     gcc
-    # gdb
-    nodejs
-    python315
-    go
-    erlang
-    php
-    lua
-    dotnet-sdk_10
-    csharp-ls
-    csharpier
 
-    # Language toolchains & package managers
+    # Java & JVM ecosystem
+    # javaPackages.compiler.openjdk21
+    # javaPackages.compiler.openjdk25
+    gradle
+    javaPackages.compiler.temurin-bin.jdk-21
+    javaPackages.compiler.temurin-bin.jdk-25
+    kotlin
+    ktlint
+    lemminx
+    maven
+
+    # JavaScript / TypeScript ecosystem
+    biome
+    deno
     ni
+    nodejs
     pnpm
     typescript
-    rebar3
-    uv
-    deno
+    typescript-language-server
+    vscode-css-languageserver
+
+    # Python ecosystem
     pipx
+    python313Packages.ipython
+    python315
+    ruff
+    uv
+
+    # Go ecosystem
+    go
+    gopls
+
+    # .NET ecosystem
+    csharp-ls
+    csharpier
+    dotnet-sdk_10
+    fantomas
+    fsautocomplete
+    roslyn-ls
+
+    # PHP ecosystem
+    php
+    phpactor
     phpPackages.composer
 
-    # JVM
-    kotlin
-    gradle
+    # Erlang ecosystem
+    erlang
+    rebar3
 
-    # Language servers
-    tree-sitter
-    typescript-language-server
-    gopls
-    rust-analyzer
-    efm-langserver
+    # Lua ecosystem
     emmylua-ls
-    yaml-language-server
-    bash-language-server
-    phpactor
-    # superhtml
-
-    # Linters & formatters
-    biome
+    lua
     stylua
-    # pre-commit
-    typos
-    ruff
-    clang-tools
-    ktlint
-    shfmt
-    shellcheck
-    markdownlint-cli2
+
+    # Typst ecosystem
+    tinymist
+    typst
+
+    # Shell scripting ecosystem
+    bash-language-server
     alejandra
+    shellcheck
+    shfmt
+
+    # Generic language tooling
+    efm-langserver
+    markdownlint-cli2
+    rust-analyzer
+    tree-sitter
+    typos
+    yaml-language-server
+    # pre-commit
 
     # Network tools
+    curl
+    gping
+    httpie
     nmap
     socat
-    httpie
-    curl
     wget
-    gping
 
     # Container tools
+    colima
     docker
     docker-compose
-    colima
     lima
 
     # Media tools
@@ -133,25 +155,26 @@
     yq
 
     # Security
-    gnupg
     bitwarden-cli
+    gnupg
 
     # System info
     fastfetch
-    onefetch
     glances
-    python313Packages.ipython
+    onefetch
 
     # Utilities
     chezmoi
-    gibo
-    zola
     dstp
-    opencode
+    gibo
+    kanata
     nkf
-    whois
+    opencode
     powershell
+    rsync
+    whois
     xdg-ninja
+    zola
 
     # LLMs
     ollama
@@ -236,7 +259,7 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "zap";
+      cleanup = "none";
     };
     taps = [
       "jorgelbg/tap"
@@ -245,66 +268,95 @@
 
     # Formulae that are not available in nixpkgs or better managed by Homebrew
     brews = [
-      "yabai"
-      "sketchybar"
-      "im-select"
-      "pinentry-touchid"
+      # Shell & terminal
+      "git-delta"
       "hettysoft/tap/hetty"
+      "im-select"
+      # "JetBrains/utils/kotlin-lsp"
+      "kotlin-lsp"
+      "pinentry-touchid"
+      "sketchybar"
       "winetricks"
-      "JetBrains/utils/kotlin-lsp"
-      "openjdk@21"
-      "mise"
+      "yabai"
+
+      # Language toolchains
       "gleam"
+      "mise"
+      "neovim"
+
+      # Utilities
+      "powershell"
       "unar"
+      # "openjdk@21"
+      # "openjdk@25"
     ];
 
     # Cask applications
     casks = [
       # Browsers
+      "floorp"
       "firefox"
       "firefox@developer-edition"
       "google-chrome"
       "microsoft-edge"
 
       # Terminals
-      "wezterm"
       "ghostty"
-      "warp"
       "kitty"
+      "wezterm"
+      "warp"
 
       # Development
+      "android-studio"
       "codex"
       "codex-app"
-      "visual-studio-code"
+      "cursor-cli"
+      "datagrip"
+      "db-browser-for-sqlite"
+      "fossa"
+      "github"
+      "insomnia"
       "intellij-idea"
       "intellij-idea-ce"
-      "datagrip"
       "jetbrains-toolbox"
       "miniconda"
-      "cursor-cli"
+      "rustrover"
+      "smoothcsv"
       "sourcetree"
+      "visual-studio-code"
 
       # Communication
+      "deepl"
       "discord"
       "discord@ptb"
+      "discord@canary"
+      "microsoft-teams"
       "slack"
       "thunderbird"
+      "zoom"
 
       # Utilities
+      "aerospace"
+      "alcom"
+      "alt-tab"
+      "amethyst"
+      "azookey"
+      "background-music"
+      "commander-one"
+      "jordanbaird-ice"
+      "karabiner-elements"
+      "localsend"
+      "maccy"
+      "openmtp"
       "raycast"
       "rectangle"
-      "karabiner-elements"
-      "maccy"
-      "jordanbaird-ice"
-      "alt-tab"
-      "aerospace"
-      "amethyst"
-      "wine@staging"
+      # "wine@staging"
 
       # Security
       # "1password"
       "bitwarden"
       "burp-suite"
+      "cloudflare-warp"
 
       # Virtualization
       # "orbstack"
@@ -312,15 +364,40 @@
       # "crossover"
 
       # Productivity
-      "obsidian"
-      "notion"
       "anki"
+      "calibre"
+      "libreoffice"
+      "microsoft-office"
+      "notion"
+      "obsidian"
+      "ticktick"
+      "xmind"
 
       # Media
-      "vlc"
-      "spotify"
-      "obs"
+      "audacity"
       "blender"
+      "epic-games"
+      "gimp"
+      "gstreamer-runtime"
+      "handbrake-app"
+      "httpie-desktop"
+      "inkscape"
+      "minecraft"
+      "obs"
+      "prismlauncher"
+      "spotify"
+      "steam"
+      "unity-hub"
+      "vlc"
+
+      # Fonts
+      "font-hack-nerd-font"
+      "font-sketchybar-app-font"
+
+      # Microsoft
+      "microsoft-auto-update"
+      "wireshark-app"
+      "wine-stable"
 
       # LLMs
       "claude"

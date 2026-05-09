@@ -1,5 +1,11 @@
+local fsharp_definition = require("config.fsharp_definition")
+
+fsharp_definition.setup()
+
 local on_attach = function(client, bufnr)
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to Definition" })
+  vim.keymap.set("n", "gd", function()
+    fsharp_definition.go_to_definition_with_fallback()
+  end, { buffer = bufnr, desc = "Go to Definition" })
   vim.keymap.set("n", ">", function()
     vim.lsp.buf.hover()
   end, { buffer = bufnr, desc = "Hover Documentation" })
@@ -48,6 +54,23 @@ for _, path in ipairs(lua_library_paths) do
     lua_seen_paths[path] = true
   end
 end
+
+vim.filetype.add({
+  extension = {
+    fsproj = "xml",
+    csproj = "xml",
+    vbproj = "xml",
+    props = "xml",
+    targets = "xml",
+    slnx = "xml",
+  },
+})
+
+-- xmllint
+vim.lsp.config("xmllint", {
+  filetypes = { "xml" },
+  cmd = { "xmllint" },
+})
 
 -- Biome
 vim.lsp.config("biome", {
@@ -150,6 +173,12 @@ vim.lsp.config("html", {
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = { "superhtml", "lsp" },
+})
+
+-- CSS
+vim.lsp.config("cssls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
 })
 
 -- TypeScript / JavaScript
@@ -258,14 +287,6 @@ vim.lsp.config("bashls", {
   cmd = { "bash-language-server", "start" },
 })
 
--- Kotlin
-vim.lsp.config("kotlin-lsp", {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  filetypes = { "kotlin" },
-  cmd = { "kotlin-lsp", "--stdio" },
-})
-
 -- YAML
 vim.lsp.config("yaml-language-server", {
   on_attach = on_attach,
@@ -274,12 +295,125 @@ vim.lsp.config("yaml-language-server", {
   cmd = { "yaml-language-server", "--stdio" },
 })
 
--- C#
-vim.lsp.config("csharp-ls", {
+-- C# / Roslyn
+vim.lsp.config("roslyn", {
   on_attach = on_attach,
   capabilities = capabilities,
-  filetypes = { "cs" },
-  cmd = { "csharp-ls" },
+  settings = {
+    ["csharp|background_analysis"] = {
+      dotnet_analyzer_diagnostics_scope = "fullSolution",
+      dotnet_compiler_diagnostics_scope = "fullSolution",
+    },
+    ["csharp|inlay_hints"] = {
+      csharp_enable_inlay_hints_for_implicit_object_creation = true,
+      csharp_enable_inlay_hints_for_implicit_variable_types = true,
+      csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+      csharp_enable_inlay_hints_for_types = true,
+      dotnet_enable_inlay_hints_for_indexer_parameters = true,
+      dotnet_enable_inlay_hints_for_literal_parameters = true,
+      dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+      dotnet_enable_inlay_hints_for_other_parameters = true,
+      dotnet_enable_inlay_hints_for_parameters = true,
+      dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
+      dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+      dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+    },
+    ["csharp|symbol_search"] = {
+      dotnet_search_reference_assemblies = true,
+    },
+    ["csharp|completion"] = {
+      dotnet_show_name_completion_suggestions = true,
+      dotnet_show_completion_items_from_unimported_namespaces = true,
+      dotnet_provide_regex_completions = true,
+    },
+    ["csharp|code_lens"] = {
+      dotnet_enable_references_code_lens = true,
+    },
+  },
+})
+
+local function is_dotnet_root(path)
+  if type(path) ~= "string" or path == "" then
+    return false
+  end
+
+  return vim.fn.isdirectory(path .. "/sdk") == 1 and vim.fn.executable(path .. "/dotnet") == 1
+end
+
+local function resolve_dotnet_root()
+  local dotnet_root = vim.env.DOTNET_ROOT
+  if is_dotnet_root(dotnet_root) then
+    return dotnet_root
+  end
+
+  local dotnet = vim.fn.exepath("dotnet")
+  if dotnet == "" then
+    return nil
+  end
+
+  local resolved_dotnet = vim.fn.resolve(dotnet)
+  local dotnet_dir = vim.fs.dirname(resolved_dotnet)
+  if type(dotnet_dir) ~= "string" or dotnet_dir == "" then
+    return nil
+  end
+
+  local candidates = {}
+  local function add_candidate(path)
+    if type(path) == "string" and path ~= "" then
+      table.insert(candidates, path)
+    end
+  end
+
+  add_candidate(dotnet_dir)
+  if vim.fs.basename(dotnet_dir) == "bin" then
+    local dotnet_prefix = vim.fs.dirname(dotnet_dir)
+    add_candidate(dotnet_prefix)
+    if type(dotnet_prefix) == "string" and dotnet_prefix ~= "" then
+      add_candidate(dotnet_prefix .. "/libexec")
+    end
+  end
+
+  for _, candidate in ipairs(candidates) do
+    if is_dotnet_root(candidate) then
+      return candidate
+    end
+  end
+
+  return nil
+end
+
+local fsautocomplete_cmd_env = nil
+local fsautocomplete_dotnet_root = resolve_dotnet_root()
+if fsautocomplete_dotnet_root then
+  fsautocomplete_cmd_env = {
+    DOTNET_ROOT = fsautocomplete_dotnet_root,
+  }
+end
+
+-- F#
+vim.lsp.config("fsautocomplete", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = { "fsharp" },
+  cmd = { "fsautocomplete", "--adaptive-lsp-server-enabled" },
+  cmd_env = fsautocomplete_cmd_env,
+  root_markers = { "*.sln", "*.slnx", "*.fsproj", ".git" },
+  init_options = {
+    AutomaticWorkspaceInit = true,
+  },
+  settings = {
+    FSharp = {
+      keywordsAutocomplete = true,
+      ExternalAutocomplete = false,
+      Linter = true,
+      UseSdkScripts = true,
+      ResolveNamespaces = true,
+      EnableReferenceCodeLens = true,
+      UnusedOpensAnalyzer = true,
+      UnusedDeclarationsAnalyzer = true,
+      SimplifyNameAnalyzer = true,
+    },
+  },
 })
 
 -- Erlang
@@ -306,14 +440,14 @@ vim.lsp.enable({
   "phpactor",
   "rust_analyzer",
   "html",
+  "cssls",
   "ts_ls",
   "gleam",
   "clangd",
   "lua",
   "bashls",
-  "kotlin-lsp",
   "yaml-language-server",
-  "csharp-ls",
+  "fsautocomplete",
   "erlls",
   "expert",
 })

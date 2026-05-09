@@ -25,8 +25,8 @@ opt.expandtab = true
 opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
--- 背景透過
-opt.winblend = 40 -- ウィンドウの不透明度
+-- 浮動ウィンドウ透過
+opt.winblend = 0 -- 0: 不透明, 100: 完全透明
 -- opt.pumblend = 100 -- ポップアップメニューの不透明度
 -- 空行のチルダを非表示
 opt.fillchars = { eob = " " }

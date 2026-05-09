@@ -27,6 +27,7 @@ alias cdx="codex"
 alias co="cargo"
 alias dk="docker"
 alias dkc="docker compose"
+alias dn="dotnet"
 alias g="git"
 alias gg="cz c"
 alias gl="gleam"
@@ -46,7 +47,7 @@ alias zshconf="cd ~/.config/zsh && nvim .zshrc"
 alias cf="copyfile"
 alias ccu="pnpm dlx ccusage"
 alias oc="opencode"
-alias venv="source ./venv/bin/activate"  # Changed from activate.fish
+alias venv="source ./venv/bin/activate" # Changed from activate.fish
 alias wget="wget --hsts-file='$XDG_DATA_HOME/wget-hsts'"
 wine() {
   LANG=ja_JP.UTF-8 command wine "$@"

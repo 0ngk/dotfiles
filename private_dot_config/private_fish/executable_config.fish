@@ -175,7 +175,9 @@ set -gx SONARLINT_USER_HOME $XDG_DATA_HOME/sonarlint
 
 # android
 set -gx ANDROID_USER_HOME $XDG_DATA_HOME/android
-alias adb 'HOME="$XDG_DATA_HOME"/android adb'
+function adb --description "Run adb with XDG Android home"
+    env HOME="$XDG_DATA_HOME"/android command adb $argv
+end
 
 # docker
 set -gx DOCKER_CONFIG $XDG_CONFIG_HOME/docker
@@ -198,6 +200,7 @@ alias cdx      "codex"
 alias co       "cargo"
 alias dk       "docker"
 alias dkc      "docker compose"
+alias dn       "dotnet"
 alias f        "fish"
 alias fishconf "cd ~/.config/fish && nvim config.fish"
 alias g        "git"
@@ -255,3 +258,13 @@ else
 end
 # <<< conda initialize <<<
 
+# Java (must run after other PATH mutations, including conda)
+if test -f "$XDG_CONFIG_HOME/fish/conf.d/java-temurin-nix.fish"
+    source "$XDG_CONFIG_HOME/fish/conf.d/java-temurin-nix.fish"
+end
+
+# Prefer nix-darwin system binaries when both Nix and Homebrew provide commands.
+fish_add_path -P -m -- /run/current-system/sw/bin
+
+# Kotlin LSP
+set -gx KOTLIN_LSP_DIR /opt/homebrew/opt/kotlin-lsp/libexec

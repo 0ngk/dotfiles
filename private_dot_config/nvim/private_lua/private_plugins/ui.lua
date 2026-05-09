@@ -19,6 +19,62 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      local fallback_float_bg = "#2a2a2a"
+      local fallback_float_border_fg = "#6b8dd6"
+
+      local function to_hex(color)
+        if type(color) ~= "number" then
+          return nil
+        end
+        return string.format("#%06x", color)
+      end
+
+      local function apply_opaque_float_highlights()
+        local float_bg = fallback_float_bg
+        local float_border_fg = fallback_float_border_fg
+
+        local pmenu_ok, pmenu = pcall(vim.api.nvim_get_hl, 0, { name = "Pmenu", link = false })
+        if pmenu_ok and type(pmenu) == "table" then
+          float_bg = to_hex(pmenu.bg) or float_bg
+        end
+
+        local border_ok, border = pcall(vim.api.nvim_get_hl, 0, { name = "FloatBorder", link = false })
+        if border_ok and type(border) == "table" then
+          float_border_fg = to_hex(border.fg) or float_border_fg
+        end
+
+        local normal_groups = {
+          "NormalFloat",
+          "LspFloatWinNormal",
+          "NoicePopup",
+          "TelescopeNormal",
+          "TelescopePromptNormal",
+          "TelescopeResultsNormal",
+          "TelescopePreviewNormal",
+          "WhichKeyFloat",
+        }
+
+        local border_groups = {
+          "FloatBorder",
+          "LspFloatWinBorder",
+          "NoicePopupBorder",
+          "TelescopeBorder",
+          "TelescopePromptBorder",
+          "TelescopeResultsBorder",
+          "TelescopePreviewBorder",
+        }
+
+        for _, group in ipairs(normal_groups) do
+          vim.api.nvim_set_hl(0, group, { bg = float_bg })
+        end
+
+        for _, group in ipairs(border_groups) do
+          vim.api.nvim_set_hl(0, group, { bg = float_bg, fg = float_border_fg })
+        end
+
+        vim.api.nvim_set_hl(0, "BlinkCmpDocBorder", { link = "FloatBorder" })
+      end
+
       require("nightfox").setup({
         options = {
           transparent = true,
@@ -45,17 +101,22 @@ return {
         },
         groups = {
           all = {
-            -- 透過背景の維持
-            NormalFloat = { bg = "NONE" },
-            FloatBorder = { bg = "NONE" },
-            TelescopeNormal = { bg = "NONE" },
-            TelescopeBorder = { bg = "NONE" },
-            TelescopePromptNormal = { bg = "NONE" },
-            TelescopePromptBorder = { bg = "NONE" },
-            TelescopeResultsNormal = { bg = "NONE" },
-            TelescopeResultsBorder = { bg = "NONE" },
-            TelescopePreviewNormal = { bg = "NONE" },
-            TelescopePreviewBorder = { bg = "NONE" },
+            -- 浮動ウィンドウの既定値（起動後に Pmenu 背景に同期）
+            NormalFloat = { bg = fallback_float_bg },
+            FloatBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            LspFloatWinNormal = { bg = fallback_float_bg },
+            LspFloatWinBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            NoicePopup = { bg = fallback_float_bg },
+            NoicePopupBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            TelescopeNormal = { bg = fallback_float_bg },
+            TelescopeBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            TelescopePromptNormal = { bg = fallback_float_bg },
+            TelescopePromptBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            TelescopeResultsNormal = { bg = fallback_float_bg },
+            TelescopeResultsBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            TelescopePreviewNormal = { bg = fallback_float_bg },
+            TelescopePreviewBorder = { bg = fallback_float_bg, fg = fallback_float_border_fg },
+            WhichKeyFloat = { bg = fallback_float_bg },
 
             ["@keyword"] = { fg = "#ffc4d6", style = "bold" },
             ["@string"] = { fg = "#e9d9ee" },
@@ -71,18 +132,7 @@ return {
         },
       })
       vim.cmd("colorscheme carbonfox")
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "BlinkCmpDocBorder", { link = "FloatBorder" })
-      vim.api.nvim_set_hl(0, "NoicePopupBorder", { link = "FloatBorder" })
-      vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = "NONE" })
+      apply_opaque_float_highlights()
       -- Cursor/visual highlights
       -- vim.api.nvim_set_hl(0, "CursorLine", { bg = "#e9d9ee", blend = 30 })
       -- vim.api.nvim_set_hl(0, "CursorColumn", { bg = "#e9d9ee", blend = 30 })

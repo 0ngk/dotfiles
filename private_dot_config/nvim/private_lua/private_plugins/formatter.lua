@@ -1,3 +1,14 @@
+vim.filetype.add({
+  extension = {
+    fsproj = "xml",
+    csproj = "xml",
+    vbproj = "xml",
+    props = "xml",
+    targets = "xml",
+    slnx = "xml",
+  },
+})
+
 return {
   {
     "stevearc/conform.nvim",
@@ -5,6 +16,7 @@ return {
     cmd = { "ConformInfo" },
     opts = {
       formatters_by_ft = {
+        xml = { "xml" },
         lua = { "stylua" },
         javascript = { "biome" },
         javascriptreact = { "biome" },
@@ -27,16 +39,29 @@ return {
         rust = { "rustfmt" },
         go = { "gofmt", "goimports" },
         cs = { "csharpier" },
+        fsharp = { "fantomas" },
         elixir = { "mix" },
         ["*"] = { "trim_whitespace" },
       },
       default_format_opts = {
         lsp_format = "fallback",
       },
-      format_on_save = {
-        timeout_ms = 500,
-      },
+      format_on_save = function(bufnr)
+        local filetype = vim.bo[bufnr].filetype
+        local timeout_ms = (filetype == "fsharp" or filetype == "kotlin") and 5000 or 1000
+        return {
+          lsp_format = "fallback",
+          timeout_ms = timeout_ms,
+        }
+      end,
       formatters = {
+        xml = {
+          {
+            exe = "xmllint",
+            args = { "--format", "-" },
+            stdin = true,
+          },
+        },
         stylua = {
           append_args = { "--indent-type", "Spaces", "--indent-width", "2" },
         },

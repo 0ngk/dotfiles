@@ -20,7 +20,7 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
-      win = { wo = { winblend = 40 } },
+      win = { wo = { winblend = 0 } },
       spec = {
         { "<leader>d", group = "Debug" },
         { "<leader>t", group = "Test" },

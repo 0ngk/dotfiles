@@ -52,6 +52,28 @@ export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
 export PNPM_HOME="$XDG_DATA_HOME/pnpm"
 
 # ========================================
+# Java
+# ========================================
+if [ -x /run/current-system/sw/bin/java ]; then
+  _java_bin="$(readlink /run/current-system/sw/bin/java 2>/dev/null)"
+  if [ -z "$_java_bin" ]; then
+    _java_bin="/run/current-system/sw/bin/java"
+  fi
+
+  _java_home="$(dirname "$(dirname "$_java_bin")")"
+  if [ -d "$_java_home/bin" ]; then
+    export JAVA_HOME="$_java_home"
+    export JDK_HOME="$_java_home"
+    case ":$PATH:" in
+      *":$_java_home/bin:"*) ;;
+      *) export PATH="$_java_home/bin:$PATH" ;;
+    esac
+  fi
+
+  unset _java_bin _java_home
+fi
+
+# ========================================
 # Development Tools
 # ========================================
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
@@ -67,13 +89,29 @@ if command -v dotnet >/dev/null 2>&1; then
     _dotnet_real_bin="$(realpath "$_dotnet_bin" 2>/dev/null)"
   fi
 
-  if [[ -n $_dotnet_real_bin && -x $_dotnet_real_bin ]]; then
-    export DOTNET_ROOT="$(dirname "$_dotnet_real_bin")"
-  else
-    export DOTNET_ROOT="$(dirname "$_dotnet_bin")"
+  if [[ -z $_dotnet_real_bin || ! -x $_dotnet_real_bin ]]; then
+    _dotnet_real_bin="$_dotnet_bin"
   fi
 
-  unset _dotnet_bin _dotnet_real_bin
+  _dotnet_root_candidate="$(dirname "$_dotnet_real_bin")"
+
+  if [[ -d "$_dotnet_root_candidate/sdk" && -x "$_dotnet_root_candidate/dotnet" ]]; then
+    export DOTNET_ROOT="$_dotnet_root_candidate"
+  elif [[ "${_dotnet_root_candidate:t}" == "bin" ]]; then
+    _dotnet_parent="${_dotnet_root_candidate:h}"
+    if [[ -d "$_dotnet_parent/libexec/sdk" && -x "$_dotnet_parent/libexec/dotnet" ]]; then
+      export DOTNET_ROOT="$_dotnet_parent/libexec"
+    elif [[ -d "$_dotnet_parent/sdk" && -x "$_dotnet_parent/dotnet" ]]; then
+      export DOTNET_ROOT="$_dotnet_parent"
+    else
+      export DOTNET_ROOT="$_dotnet_root_candidate"
+    fi
+    unset _dotnet_parent
+  else
+    export DOTNET_ROOT="$_dotnet_root_candidate"
+  fi
+
+  unset _dotnet_bin _dotnet_real_bin _dotnet_root_candidate
 else
   export DOTNET_ROOT="$XDG_DATA_HOME/dotnet"
 fi
@@ -102,3 +140,6 @@ export DENO_INSTALL_ROOT_BIN="$DENO_INSTALL_ROOT/bin"
 # ========================================
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 # Note: GPG_TTY is set in .zshrc (interactive shells only)
+
+# Kotlin LSP
+export KOTLIN_LSP_DIR=/opt/homebrew/opt/kotlin-lsp/libexec
