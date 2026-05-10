@@ -96,6 +96,34 @@
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "Change control+^ to ~/",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "equal_sign",
+                                    "modifiers": {
+                                        "mandatory": ["control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "equal_sign",
+                                        "modifiers": ["left_shift"]
+                                    },
+                                    { "key_code": "slash" }
+                                ],
+                                "conditions": [
+                                    {
+                                        "type": "keyboard_type_if",
+                                        "keyboard_types": ["jis"]
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
