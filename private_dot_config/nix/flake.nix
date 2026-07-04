@@ -13,15 +13,18 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
-  let
+  outputs = inputs @ {
+    self,
+    nix-darwin,
+    nixpkgs,
+    home-manager,
+  }: let
     username = "rei";
     system = "aarch64-darwin";
-  in
-  {
+  in {
     darwinConfigurations.MacBookAir = nix-darwin.lib.darwinSystem {
       inherit system;
-      specialArgs = { inherit inputs username; };
+      specialArgs = {inherit inputs username;};
       modules = [
         ./configuration.nix
         home-manager.darwinModules.home-manager

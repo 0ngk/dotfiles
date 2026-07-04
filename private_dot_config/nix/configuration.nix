@@ -17,6 +17,18 @@
 
   nix.optimise.automatic = true;
 
+  nix.gc = {
+    automatic = true;
+    interval = [
+      {
+        Weekday = 7;
+        Hour = 3;
+        Minute = 15;
+      }
+    ];
+    options = "--delete-older-than 30d";
+  };
+
   # System packages
   environment.systemPackages = with pkgs; [
     # Editors
@@ -30,6 +42,7 @@
     difftastic
     gh
     git
+    git-lfs
     git-filter-repo
     lazygit
     mercurial
@@ -54,6 +67,7 @@
     yazi
     zoxide
     # kitty
+    zellij
 
     # C/C++ ecosystem
     clang-tools
@@ -62,7 +76,7 @@
     # Java & JVM ecosystem
     # javaPackages.compiler.openjdk21
     # javaPackages.compiler.openjdk25
-    gradle
+    # gradle
     javaPackages.compiler.temurin-bin.jdk-21
     javaPackages.compiler.temurin-bin.jdk-25
     kotlin
@@ -72,7 +86,6 @@
 
     # JavaScript / TypeScript ecosystem
     biome
-    deno
     ni
     nodejs
     pnpm
@@ -131,6 +144,7 @@
     typos
     yaml-language-server
     # pre-commit
+    sqls
 
     # Network tools
     curl
@@ -153,6 +167,9 @@
     # Data tools
     jq
     yq
+    tesseract
+    poppler
+    poppler-utils
 
     # Security
     bitwarden-cli
@@ -169,12 +186,17 @@
     gibo
     kanata
     nkf
-    opencode
     powershell
     rsync
     whois
     xdg-ninja
     zola
+
+    # supabase
+    supabase-cli
+
+    # Slides
+    marp-cli
 
     # LLMs
     ollama
@@ -206,6 +228,7 @@
     # Dock settings
     dock = {
       autohide = true;
+      expose-animation-duration = 0.1;
       largesize = 16;
       magnification = false;
       minimize-to-application = true;
@@ -216,6 +239,11 @@
 
       # Hot corners
       wvous-br-corner = 14; # Notification Center
+    };
+
+    # Accessibility settings
+    universalaccess = {
+      reduceMotion = true;
     };
 
     # Finder settings
@@ -261,34 +289,54 @@
       upgrade = true;
       cleanup = "none";
     };
-    taps = [
-      "jorgelbg/tap"
-      "jetbrains/utils"
-    ];
+    extraConfig = ''
+      tap "jorgelbg/tap"
+      tap "jetbrains/utils"
+      tap "felixkratz/formulae"
+      tap "oven-sh/bun"
+      tap "hettysoft/tap"
+      tap "daipeihust/tap"
+      tap "docker/tap"
+      tap "nikitabobko/tap"
+      tap "TheBoredTeam/boring-notch"
+      brew "jorgelbg/tap/pinentry-touchid", trusted: true
+      brew "jetbrains/utils/kotlin-lsp", trusted: true
+      brew "felixkratz/formulae/sketchybar", trusted: true
+      brew "oven-sh/bun/bun", trusted: true
+      brew "hettysoft/tap/hetty", trusted: true
+      brew "daipeihust/tap/im-select", trusted: true
+      cask "docker/tap/sbx", trusted: true
+      cask "nikitabobko/tap/aerospace", trusted: true
+      cask "TheBoredTeam/boring-notch/boring-notch", trusted: true
+    '';
 
     # Formulae that are not available in nixpkgs or better managed by Homebrew
     brews = [
       # Shell & terminal
       "git-delta"
-      "hettysoft/tap/hetty"
-      "im-select"
-      # "JetBrains/utils/kotlin-lsp"
-      "kotlin-lsp"
-      "pinentry-touchid"
-      "sketchybar"
       "winetricks"
-      "yabai"
+      # "yabai"
 
       # Language toolchains
       "gleam"
       "mise"
       "neovim"
+      "jdtls"
+      "npm"
+      "yarn"
+      "gradle"
+      "deno"
 
       # Utilities
       "powershell"
       "unar"
       # "openjdk@21"
       # "openjdk@25"
+
+      # LLMs
+      "opencode"
+      "openclaw-cli"
+      "agent-browser"
     ];
 
     # Cask applications
@@ -324,6 +372,9 @@
       "smoothcsv"
       "sourcetree"
       "visual-studio-code"
+      "dbeaver-community"
+      "postman"
+      "zed"
 
       # Communication
       "deepl"
@@ -336,7 +387,6 @@
       "zoom"
 
       # Utilities
-      "aerospace"
       "alcom"
       "alt-tab"
       "amethyst"
@@ -351,6 +401,7 @@
       "raycast"
       "rectangle"
       # "wine@staging"
+      "linear"
 
       # Security
       # "1password"
@@ -403,6 +454,9 @@
       "claude"
       "claude-code"
       "chatgpt"
+      "copilot-cli"
+      "chatgpt-atlas"
+      "openclaw"
     ];
   };
 
