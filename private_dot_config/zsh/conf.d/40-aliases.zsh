@@ -34,6 +34,7 @@ alias gl="gleam"
 alias lg="lazygit"
 alias nv="nvim"
 alias p="pnpm"
+alias uz="unzip"
 alias y="yarn"
 alias yz="yazi"
 

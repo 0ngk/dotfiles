@@ -79,7 +79,24 @@ fi
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export COMPOSER_HOME="$XDG_DATA_HOME/composer"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export TESTCONTAINERS_RYUK_DISABLED=true
 export ANDROID_USER_HOME="$XDG_DATA_HOME/android"
+if (( ! ${+JDTLS_HOME} )); then
+  _jdtls_candidates=()
+  if [[ -n ${HOMEBREW_PREFIX:-} ]]; then
+    _jdtls_candidates+=("${HOMEBREW_PREFIX}/opt/jdtls/libexec")
+  fi
+  _jdtls_candidates+=(/opt/homebrew/opt/jdtls/libexec /usr/local/opt/jdtls/libexec)
+
+  for _jdtls_home in "${_jdtls_candidates[@]}"; do
+    if [[ -d "$_jdtls_home" ]]; then
+      export JDTLS_HOME="$_jdtls_home"
+      break
+    fi
+  done
+
+  unset _jdtls_candidates _jdtls_home
+fi
 if command -v dotnet >/dev/null 2>&1; then
   _dotnet_bin="$(command -v dotnet)"
   _dotnet_real_bin=""

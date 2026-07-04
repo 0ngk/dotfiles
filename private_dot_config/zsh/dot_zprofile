@@ -65,8 +65,10 @@ path=(${path:#.} ${path:#''})
 # Added by Toolbox App
 path+="/Users/rei/Library/Application Support/JetBrains/Toolbox/scripts"
 
-# Prefer nix-darwin system binaries when both Nix and Homebrew provide commands.
+# Prefer the macOS toolchain linker before nix-darwin wrappers.
 path=(
+  /Library/Developer/CommandLineTools/usr/bin(N-/)
+  /usr/bin(N-/)
   /run/current-system/sw/bin(N-/)
   $path
 )
