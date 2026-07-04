@@ -16,10 +16,13 @@
   del      = reset --soft HEAD^
   diffnpst = !git --no-pager diff --staged
   ds       = diff --staged
+  fe       = fetch
   ev       = !git add -A && git commit -m "wip" && git push origin HEAD
   i        = init
   ic       = !git commit --allow-empty -m "Initial commit"
   lognp    = !git --no-pager log
+  mg       = merge
+  mgt      = mergetool
   s        = status
   sh       = stash
   ps       = push
@@ -29,6 +32,7 @@
   plo      = pull origin
   ploh     = pull origin HEAD
   plus     = pull upstream
+  rb       = rebase
   si       = switch
   sic      = switch -c
   sim      = switch main
@@ -72,14 +76,17 @@
 [merge]
   tool = neovimdiff
 	conflictStyle = zdiff3
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+
 [interactive]
 	diffFilter = delta --color-only
+
 [delta]
 	navigate = true
 	dark = true
+
+[includeIf "gitdir:~/sc/"]
+  path = ~/sc/_git/config
+
+[includeIf "gitdir:~/pgm/dev/css/"]
+  path = ~/pgm/dev/css/_git/config
