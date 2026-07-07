@@ -16,5 +16,8 @@ xfce4-clipman &
 ## Notification
 dunst &
 
+## Bar
+~/.config/polybar/launch.sh &
+
 # Start a wm
 exec i3
