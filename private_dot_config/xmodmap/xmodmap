@@ -1,1 +1,15 @@
-keycode 129 = BackSpace BackSpace
+! Caps Lock -> Control
+clear Lock
+keycode 66 = Control_L NoSymbol Control_L
+add Control = Control_L
+
+! Muhenkan -> Shift
+clear Shift
+keysym Muhenkan = Shift_L NoSymbol Shift_L
+add Shift = Shift_L Shift_R
+
+! Henkan -> Escape
+keysym Henkan_Mode = Escape NoSymbol Escape
+
+! Kana/Hira -> Backspace
+keysym Hiragana_Katakana = BackSpace NoSymbol BackSpace
