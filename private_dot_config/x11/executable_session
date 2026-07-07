@@ -7,7 +7,7 @@ xset r rate 300 20
 xmodmap ~/.config/xmodmap/xmodmap
 
 # Wallpaper
-xwallpaper --zoom "$HOME/Pictures/wallpapers/c_1.png" &
+xwallpaper --zoom "$HOME/Pictures/wallpapers/vars/wallpaper.png" &
 
 # Deamons
 ## Clipboard manager
@@ -17,4 +17,4 @@ xfce4-clipman &
 dunst &
 
 # Start a wm
-exec spectrwm
+exec i3
