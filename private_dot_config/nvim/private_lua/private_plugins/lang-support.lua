@@ -40,8 +40,8 @@ return {
     ft = { "cs", "razor" },
     dependencies = { "neovim/nvim-lspconfig" },
     opts = {
-      broad_search = true,
-      lock_target = false,
+      broad_search = false,
+      lock_target = true,
       filewatching = "auto",
       choose_target = function(targets)
         if type(targets) ~= "table" or #targets == 0 then
@@ -80,6 +80,12 @@ return {
         return sorted[1]
       end,
     },
+  },
+
+  -- Java
+  {
+    "mfussenegger/nvim-jdtls",
+    ft = { "java" },
   },
 
   -- Kotlin

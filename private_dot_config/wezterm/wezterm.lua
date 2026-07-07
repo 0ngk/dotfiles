@@ -43,8 +43,8 @@ end)
 
 config.window_decorations = "RESIZE"
 
--- Zellij
-config.default_prog = { "/run/current-system/sw/bin/zellij", "-l", "welcome" }
+-- herdr
+config.default_prog = { "/opt/homebrew/bin/herdr" }
 
 -- Font Settings
 -- config.font = wezterm.font("SauceCodePro Nerd Font")

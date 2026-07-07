@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-# chezmoi cdの場合はcdしない
+# chezmoi cdの場合は cd ~/ しない
 if not set -q CHEZMOI_SOURCE_DIR
   cd ~/
 end
@@ -29,8 +29,9 @@ set -g theme_newline_cursor            yes
 function __random_prompt_message
     set -l messages \
         "Eclipse first, the rest nowhere." \
-        "心不在焉，視而不見，聽而不聞，食而不知其味。" \
-        "期待ではなく準備をする。"
+        # "心不在焉，視而不見，聽而不聞，食而不知其味。" \
+        "期待ではなく準備をする。" \
+        "遅い!!"
 
     set -l random_index (random 1 (count $messages))
     echo $messages[$random_index]
@@ -124,8 +125,6 @@ set -gx NPM_CONFIG_TMP         $XDG_RUNTIME_DIR/npm
 
 # pnpm
 set -gx PNPM_HOME $HOME/.local/share/pnpm
-# Nix版pnpmを使用するため、PNPM_HOME自体はPATHに追加しない
-# グローバルパッケージのbinディレクトリのみPATHに追加
 fish_add_path $PNPM_HOME/node_modules/.bin
 fish_add_path $HOME/.local/share/pnpm
 
@@ -181,12 +180,22 @@ end
 
 # docker
 set -gx DOCKER_CONFIG $XDG_CONFIG_HOME/docker
+set -gx TESTCONTAINERS_RYUK_DISABLED true
 
 # less
 set -gx LESSHISTFILE $XDG_STATE_HOME/less/history
 
 # zsh
 set -gx ZDOTDIR $XDG_CONFIG_HOME/zsh
+
+# Kotlin LSP
+set -gx KOTLIN_LSP_DIR /opt/homebrew/opt/kotlin-lsp/libexec
+
+# JDTLS
+set -l jdtls_home /opt/homebrew/opt/jdtls/libexec
+if test -d "$jdtls_home"
+    set -gx JDTLS_HOME "$jdtls_home"
+end
 
 # Aliases
 alias b        "cd .."
@@ -204,20 +213,24 @@ alias dn       "dotnet"
 alias f        "fish"
 alias fishconf "cd ~/.config/fish && nvim config.fish"
 alias g        "git"
+alias gconf    "cd ~/.config/git && nvim config"
 alias gg       "cz c"
 alias gl       "gleam"
-alias gconf    "cd ~/.config/git && nvim config"
+alias gs       "git branch --format='%(refname:short)' | fzf | xargs git switch"
 alias la       "ls --icons -A"
 alias lg       "lazygit"
 alias ll       "ls --icons -la"
 alias ls       "eza --icons"
-alias mkd      "mkdir -p"
+function mkd --description "Create a directory and cd into it"
+    mkdir -p $argv; and cd $argv[-1]
+end
 alias nv       "nvim"
 alias nvimconf "cd ~/.config/nvim && nvim init.lua"
 alias oc       "opencode"
 alias p        "pnpm"
 alias rm       "gomi"
 alias rmrm     "/bin/rm"
+alias uz       "unzip"
 alias venv     "source ./venv/bin/activate.fish"
 alias wget     "wget --hsts-file='$XDG_DATA_HOME/wget-hsts'"
 function wine --description "Run wine with Japanese locale"
@@ -246,15 +259,12 @@ zoxide init fish | source
 mise activate fish | source
 
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-if test -f /opt/homebrew/Caskroom/miniconda/base/bin/conda
-    eval /opt/homebrew/Caskroom/miniconda/base/bin/conda "shell.fish" "hook" $argv | source
-else
-    if test -f "/opt/homebrew/Caskroom/miniconda/base/etc/fish/conf.d/conda.fish"
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/fish/conf.d/conda.fish"
-    else
-        set -x PATH "/opt/homebrew/Caskroom/miniconda/base/bin" $PATH
-    end
+# Avoid running `conda shell.fish hook` on every startup; it is much slower than
+# sourcing the generated fish integration directly.
+if test -f "/opt/homebrew/Caskroom/miniconda/base/etc/fish/conf.d/conda.fish"
+    source "/opt/homebrew/Caskroom/miniconda/base/etc/fish/conf.d/conda.fish"
+else if test -d "/opt/homebrew/Caskroom/miniconda/base/bin"
+    fish_add_path "/opt/homebrew/Caskroom/miniconda/base/bin"
 end
 # <<< conda initialize <<<
 
@@ -263,8 +273,11 @@ if test -f "$XDG_CONFIG_HOME/fish/conf.d/java-temurin-nix.fish"
     source "$XDG_CONFIG_HOME/fish/conf.d/java-temurin-nix.fish"
 end
 
-# Prefer nix-darwin system binaries when both Nix and Homebrew provide commands.
-fish_add_path -P -m -- /run/current-system/sw/bin
-
-# Kotlin LSP
-set -gx KOTLIN_LSP_DIR /opt/homebrew/opt/kotlin-lsp/libexec
+# Prefer the macOS toolchain linker before nix-darwin wrappers.
+if test "$__platform" = "macos"
+    fish_add_path -P -m -- /Library/Developer/CommandLineTools/usr/bin /usr/bin /run/current-system/sw/bin
+    # Prefer Homebrew-provided Node.js commands over nix-darwin wrappers.
+    fish_add_path -P -m -- /opt/homebrew/bin /opt/homebrew/sbin
+else
+    fish_add_path -P -m -- /run/current-system/sw/bin
+end

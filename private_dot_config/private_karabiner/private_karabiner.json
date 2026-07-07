@@ -101,7 +101,12 @@
                         "description": "Change control+^ to ~/",
                         "manipulators": [
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "keyboard_types": ["jis"],
+                                        "type": "keyboard_type_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "equal_sign",
                                     "modifiers": {
@@ -116,12 +121,33 @@
                                     },
                                     { "key_code": "slash" }
                                 ],
-                                "conditions": [
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Change delete to ~",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "key_code": "delete_or_backspace" }],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "delete_or_backspace",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
                                     {
-                                        "type": "keyboard_type_if",
-                                        "keyboard_types": ["jis"]
+                                        "key_code": "grave_accent_and_tilde",
+                                        "modifiers": ["left_shift"]
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     }
@@ -137,15 +163,6 @@
                 {
                     "from": { "key_code": "caps_lock" },
                     "to": [{ "key_code": "left_control" }]
-                },
-                {
-                    "from": { "key_code": "delete_or_backspace" },
-                    "to": [
-                        {
-                            "key_code": "spacebar",
-                            "modifiers": ["left_control"]
-                        }
-                    ]
                 },
                 {
                     "from": { "key_code": "escape" },
@@ -175,10 +192,6 @@
                 {
                     "from": { "key_code": "non_us_backslash" },
                     "to": [{ "key_code": "backslash" }]
-                },
-                {
-                    "from": { "key_code": "right_command" },
-                    "to": [{ "key_code": "delete_or_backspace" }]
                 }
             ],
             "virtual_hid_keyboard": { "keyboard_type_v2": "jis" }

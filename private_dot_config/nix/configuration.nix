@@ -42,111 +42,103 @@
     difftastic
     gh
     git
-    git-lfs
     git-filter-repo
+    git-lfs
     lazygit
     mercurial
 
-    # Shell & terminal
+    # Shell essentials
+    gomi
+    terminal-notifier
+    zoxide
+
+    # File search & navigation
     bat
-    bottom
-    byobu
     dust
     eza
     fd
     fzf
-    gomi
     lsd
-    procs
     ripgrep
-    screen
-    terminal-notifier
-    tmux
     tre-command
     tree
     yazi
-    zoxide
+
+    # Terminal sessions
+    byobu
     # kitty
+    screen
+    tmux
     zellij
 
-    # C/C++ ecosystem
+    # Language runtimes & SDKs
     clang-tools
+    dotnet-sdk_10
+    erlang
     gcc
-
-    # Java & JVM ecosystem
+    go
     # javaPackages.compiler.openjdk21
     # javaPackages.compiler.openjdk25
-    # gradle
     javaPackages.compiler.temurin-bin.jdk-21
     javaPackages.compiler.temurin-bin.jdk-25
     kotlin
-    ktlint
-    lemminx
-    maven
-
-    # JavaScript / TypeScript ecosystem
-    biome
-    ni
+    lua
     nodejs
-    pnpm
-    typescript
-    typescript-language-server
-    vscode-css-languageserver
-
-    # Python ecosystem
-    pipx
+    php
     python313Packages.ipython
     python315
-    ruff
+
+    # Package managers & build tools
+    # gradle
+    maven
+    ni
+    phpPackages.composer
+    pipx
+    pnpm
+    rebar3
+    typescript
     uv
 
-    # Go ecosystem
-    go
-    gopls
-
-    # .NET ecosystem
-    csharp-ls
-    csharpier
-    dotnet-sdk_10
-    fantomas
-    fsautocomplete
-    roslyn-ls
-
-    # PHP ecosystem
-    php
-    phpactor
-    phpPackages.composer
-
-    # Erlang ecosystem
-    erlang
-    rebar3
-
-    # Lua ecosystem
-    emmylua-ls
-    lua
-    stylua
-
-    # Typst ecosystem
-    tinymist
-    typst
-
-    # Shell scripting ecosystem
+    # Language servers & syntax tooling
     bash-language-server
+    csharp-ls
+    efm-langserver
+    emmylua-ls
+    fsautocomplete
+    gopls
+    lemminx
+    phpactor
+    roslyn-ls
+    rust-analyzer
+    sqls
+    tinymist
+    tree-sitter
+    typescript-language-server
+    vscode-css-languageserver
+    yaml-language-server
+
+    # Formatters & linters
     alejandra
+    biome
+    csharpier
+    fantomas
+    ktlint
+    markdownlint-cli2
+    # pre-commit
+    ruff
     shellcheck
     shfmt
-
-    # Generic language tooling
-    efm-langserver
-    markdownlint-cli2
-    rust-analyzer
-    tree-sitter
+    stylua
     typos
-    yaml-language-server
-    # pre-commit
-    sqls
 
-    # Network tools
+    # Developer infrastructure
+    colima
+    docker
+    docker-compose
+    lima
+    supabase-cli
+
+    # Network & HTTP
     curl
     gping
     httpie
@@ -154,52 +146,44 @@
     socat
     wget
 
-    # Container tools
-    colima
-    docker
-    docker-compose
-    lima
-
-    # Media tools
-    ffmpeg
-    imagemagick
-
-    # Data tools
+    # Data, text & documents
     jq
-    yq
-    tesseract
+    marp-cli
+    nkf
     poppler
     poppler-utils
+    tesseract
+    typst
+    yq
+    zola
+
+    # Media processing
+    ffmpeg
+    imagemagick
 
     # Security
     bitwarden-cli
     gnupg
 
-    # System info
+    # System monitoring & info
+    bottom
     fastfetch
     glances
     onefetch
+    procs
 
-    # Utilities
+    # AI / LLM
+    ollama
+
+    # Misc utilities
     chezmoi
     dstp
     gibo
     kanata
-    nkf
     powershell
     rsync
     whois
     xdg-ninja
-    zola
-
-    # supabase
-    supabase-cli
-
-    # Slides
-    marp-cli
-
-    # LLMs
-    ollama
   ];
 
   # System defaults
@@ -222,7 +206,14 @@
       NSAutomaticQuoteSubstitutionEnabled = false;
 
       # Menu bar
-      _HIHideMenuBar = true;
+      _HIHideMenuBar = false;
+    };
+
+    CustomUserPreferences = {
+      NSGlobalDomain = {
+        # Hide the menu bar only while an app is in full screen.
+        AppleMenuBarVisibleInFullscreen = false;
+      };
     };
 
     # Dock settings
@@ -314,79 +305,96 @@
     brews = [
       # Shell & terminal
       "git-delta"
-      "winetricks"
+      "neovim"
+      "powershell"
       # "yabai"
 
       # Language toolchains
+      "deno"
       "gleam"
-      "mise"
-      "neovim"
+      "gradle"
       "jdtls"
+      "mise"
       "npm"
       "yarn"
-      "gradle"
-      "deno"
 
-      # Utilities
-      "powershell"
+      # Developer tools
+      "herdr"
+
+      # Compatibility tools
       "unar"
+      "winetricks"
       # "openjdk@21"
       # "openjdk@25"
 
-      # LLMs
+      # AI / agent CLIs
+      "agent-browser"
       "opencode"
       "openclaw-cli"
-      "agent-browser"
     ];
 
     # Cask applications
     casks = [
       # Browsers
-      "floorp"
       "firefox"
       "firefox@developer-edition"
+      "floorp"
       "google-chrome"
       "microsoft-edge"
 
       # Terminals
       "ghostty"
       "kitty"
-      "wezterm"
       "warp"
+      "wezterm"
 
-      # Development
+      # Editors & IDEs
       "android-studio"
-      "codex"
-      "codex-app"
-      "cursor-cli"
-      "datagrip"
-      "db-browser-for-sqlite"
-      "fossa"
-      "github"
-      "insomnia"
       "intellij-idea"
       "intellij-idea-ce"
       "jetbrains-toolbox"
-      "miniconda"
       "rustrover"
-      "smoothcsv"
-      "sourcetree"
       "visual-studio-code"
-      "dbeaver-community"
-      "postman"
       "zed"
+
+      # Developer tools
+      "cursor-cli"
+      "fossa"
+      "github"
+      "miniconda"
+      "sourcetree"
+
+      # Database & API clients
+      "datagrip"
+      "db-browser-for-sqlite"
+      "dbeaver-community"
+      "httpie-desktop"
+      "insomnia"
+      "postman"
+      "smoothcsv"
 
       # Communication
       "deepl"
       "discord"
-      "discord@ptb"
       "discord@canary"
+      "discord@ptb"
       "microsoft-teams"
       "slack"
       "thunderbird"
       "zoom"
 
-      # Utilities
+      # Productivity & knowledge
+      "anki"
+      "calibre"
+      "libreoffice"
+      "linear"
+      "microsoft-office"
+      "notion"
+      "obsidian"
+      "ticktick"
+      "xmind"
+
+      # System utilities
       "alcom"
       "alt-tab"
       "amethyst"
@@ -400,46 +408,40 @@
       "openmtp"
       "raycast"
       "rectangle"
-      # "wine@staging"
-      "linear"
 
-      # Security
+      # Security & networking
       # "1password"
       "bitwarden"
       "burp-suite"
       "cloudflare-warp"
+      "wireshark-app"
 
       # Virtualization
       # "orbstack"
       "utm"
       # "crossover"
 
-      # Productivity
-      "anki"
-      "calibre"
-      "libreoffice"
-      "microsoft-office"
-      "notion"
-      "obsidian"
-      "ticktick"
-      "xmind"
+      # Compatibility
+      "wine-stable"
+      # "wine@staging"
 
-      # Media
+      # Creative & media
       "audacity"
       "blender"
-      "epic-games"
       "gimp"
       "gstreamer-runtime"
       "handbrake-app"
-      "httpie-desktop"
       "inkscape"
-      "minecraft"
       "obs"
-      "prismlauncher"
       "spotify"
+      "vlc"
+
+      # Games
+      "epic-games"
+      "minecraft"
+      "prismlauncher"
       "steam"
       "unity-hub"
-      "vlc"
 
       # Fonts
       "font-hack-nerd-font"
@@ -447,15 +449,15 @@
 
       # Microsoft
       "microsoft-auto-update"
-      "wireshark-app"
-      "wine-stable"
 
-      # LLMs
+      # AI apps
+      "chatgpt"
+      "chatgpt-atlas"
       "claude"
       "claude-code"
-      "chatgpt"
+      "codex"
+      "codex-app"
       "copilot-cli"
-      "chatgpt-atlas"
       "openclaw"
     ];
   };

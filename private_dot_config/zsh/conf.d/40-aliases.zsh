@@ -8,7 +8,6 @@ alias c="cd"
 alias mkd="mkdir -p"
 
 # File operations
-# ezaの存在チェックを追加（より安全）
 if command -v eza >/dev/null 2>&1; then
   alias ls="eza --icons=auto"
   alias la="eza --icons=auto -A"
@@ -31,6 +30,7 @@ alias dn="dotnet"
 alias g="git"
 alias gg="cz c"
 alias gl="gleam"
+alias gs "git branch --format='%(refname:short)' | fzf | xargs git switch"
 alias lg="lazygit"
 alias nv="nvim"
 alias p="pnpm"
