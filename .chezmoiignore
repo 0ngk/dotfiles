@@ -2,6 +2,7 @@
 **/.git/**
 **/.localized
 **/node_modules
+**/.agents
 
 
 .config/fish/fish_variables
@@ -14,7 +15,8 @@
 .config/kitty/wallpapers/**
 
 
-.config/nvim/lazy-lock.json
+.config/nvim/.nvimlog
+.config/nvim/nvim.log
 
 
 .config/opencode/bun.lock
