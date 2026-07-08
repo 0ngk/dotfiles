@@ -15,7 +15,7 @@ return {
   },
   { "uga-rosa/ccc.nvim", lazy = false }, -- Color picker
   { "brianhuster/live-preview.nvim", cmd = "LivePreview" },
-  { "wakatime/vim-wakatime", event = "VeryLazy" },
+  -- { "wakatime/vim-wakatime", event = "VeryLazy" },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
