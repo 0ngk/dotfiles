@@ -3,6 +3,16 @@
 # Keyboard
 xset r rate 300 20
 
+
+# IME
+export XMODIFIERS='@im=fcitx'
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+## Kitty support
+export GLFW_IM_MODULE=ibus
+
+fcitx5 &
+
 # Load keybindings
 xmodmap ~/.config/xmodmap/xmodmap
 
@@ -15,6 +25,10 @@ xfce4-clipman &
 
 ## Notification
 dunst &
+
+
+## Compositor
+picom &
 
 ## Bar
 ~/.config/polybar/launch.sh &
