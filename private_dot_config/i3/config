@@ -11,24 +11,37 @@
 
 set $mod Mod4
 set $term kitty
+
 default_border none
 default_floating_border none
 hide_edge_borders none
+
+# Launcher
 bindsym $mod+space exec --no-startup-id rofi -show drun
+
+
+## Locker
 bindsym $mod+l exec --no-startup-id ~/.config/i3lock/lock.sh
-# bindsym Print exec --no-startup-id maim ~/Pictures/screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
-# bindsym Shift+Print exec --no-startup-id maim -s ~/Pictures/screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
-# bindsym Print exec --no-startup-id maim ~/Pictures/screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
-# bindsym Shift+Print exec --no-startup-id maim -s ~/Pictures/screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
 
-# Full screen to clipboard
-bindsym Print exec --no-startup-id sh -c 'maim | xclip -selection clipboard -t image/png'
 
-# Select area to clipboard
-bindsym Shift+Print exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
+## Screenshots
+# Flameshot: interactive screenshot
+bindsym Ctrl+Mod1+1 exec --no-startup-id /usr/local/bin/flameshot gui
 
-# Active window to clipboard
-bindsym $mod+Print exec --no-startup-id sh -c 'maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png'
+# Flameshot: full-screen screenshot and copy to clipboard
+bindsym Ctrl+Mod1+2 exec --no-startup-id /usr/local/bin/flameshot full --clipboard
+
+# Flameshot: full-screen screenshot and save to a file
+bindsym Ctrl+Mod1+3 exec --no-startup-id \
+    /usr/local/bin/flameshot full --path "$HOME/Pictures/screenshots"
+
+
+## Screen recordings
+# with desktop audio
+bindsym Ctrl+Mod1+Shift+1 exec --no-startup-id
+
+# without desktop audio
+bindsym Ctrl+Mod1+Shift+2 exec --no-startup-id
 
 # default_border pixel 10
 # default_floating_border pixel 20
