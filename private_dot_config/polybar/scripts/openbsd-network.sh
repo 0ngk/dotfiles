@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$(uname -s)" != "OpenBSD" ]; then
-  printf '%%{T2}󰤯%%{T-} offline\n'
+  printf '%%{F#CD9FF5}%%{T2}󰤯%%{T-}%%{F-} offline\n'
   exit 0
 fi
 
@@ -25,14 +25,14 @@ if [ -z "$iface" ]; then
 fi
 
 if [ -z "$iface" ]; then
-  printf '%%{T2}󰤯%%{T-} offline\n'
+  printf '%%{F#CD9FF5}%%{T2}󰤯%%{T-}%%{F-} offline\n'
   exit 0
 fi
 
 ip=$(ifconfig "$iface" inet 2>/dev/null | awk '/inet / { print $2; exit }')
 
 if [ -z "$ip" ]; then
-  printf '%%{T2}󰤯%%{T-} %%{F#F0C674}%s%%{F#707880} disconnected\n' "$iface"
+  printf '%%{F#CD9FF5}%%{T2}󰤯%%{T-}%%{F-} %%{F#F0C674}%s%%{F#707880} disconnected\n' "$iface"
   exit 0
 fi
 
@@ -70,15 +70,28 @@ nwid=$(ifconfig "$iface" 2>/dev/null | awk '
   {
     for (i = 1; i <= NF; i++) {
       if ($i == "nwid") {
-        print $(i + 1)
+        ssid = $(i + 1)
+
+        if (ssid ~ /^"/ && ssid !~ /"$/) {
+          for (j = i + 2; j <= NF; j++) {
+            ssid = ssid " " $j
+            if ($j ~ /"$/) {
+              break
+            }
+          }
+        }
+
+        gsub(/^"/, "", ssid)
+        gsub(/"$/, "", ssid)
+        print ssid
         exit
       }
     }
   }
-' | tr -d '"')
+')
 
 if [ -n "$nwid" ]; then
-  printf '%%{T2}%s%%{T-} %%{F#F0C674}%s%%{F-} %s %s\n' "$icon" "$iface" "$nwid" "$ip"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} %%{F#F0C674}%s:%s%%{F-} %s\n' "$icon" "$iface" "$nwid" "$ip"
 else
-  printf '%%{T2}%s%%{T-} %%{F#F0C674}%s%%{F-} %s\n' "$icon" "$iface" "$ip"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} %%{F#F0C674}%s%%{F-} %s\n' "$icon" "$iface" "$ip"
 fi

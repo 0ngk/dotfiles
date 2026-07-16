@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$(uname -s)" != "OpenBSD" ]; then
-  printf '%%{T2}%%{T-} --%%%%\n'
+  printf '%%{F#CD9FF5}%%{T2}%%{T-}%%{F-} --%%%%\n'
   exit 0
 fi
 
@@ -10,7 +10,7 @@ ac=$(apm -a 2>/dev/null)
 status=$(apm -b 2>/dev/null)
 
 if [ -z "$percent" ] || [ "$percent" = "255" ] || [ "$status" = "4" ]; then
-  printf '%%{T2}%%{T-} no battery\n'
+  printf '%%{F#CD9FF5}%%{T2}%%{T-}%%{F-} no battery\n'
   exit 0
 fi
 
@@ -30,7 +30,7 @@ else
 fi
 
 if [ "$ac" = "1" ]; then
-  printf '%%{T2}%s%%{T-} AC %s%%%%\n' "$icon" "$percent"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} AC %s%%%%\n' "$icon" "$percent"
 else
-  printf '%%{T2}%s%%{T-} %s%%%%\n' "$icon" "$percent"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} %s%%%%\n' "$icon" "$percent"
 fi
