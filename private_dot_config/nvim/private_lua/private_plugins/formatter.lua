@@ -107,6 +107,7 @@ return {
         sass = { "biome" },
         python = { "ruff_format" },
         gleam = { "gleam" },
+        nim = { "nimpretty" },
         c = { "clang-format" },
         cpp = { "clang-format" },
         sh = { "shfmt" },

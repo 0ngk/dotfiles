@@ -31,6 +31,9 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
+    android-tools
+    age
+
     # Editors
     emacs
     helix

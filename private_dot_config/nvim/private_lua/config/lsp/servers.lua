@@ -18,6 +18,7 @@ M.enabled = {
   "emmylua_ls",
   "bashls",
   "yamlls",
+  "nim_langserver",
   "fsautocomplete",
   "expert",
   "sqls",
@@ -208,6 +209,16 @@ function M.setup(opts)
 
   -- YAML
   vim.lsp.config("yamlls", common)
+
+  -- Nim
+  vim.lsp.config(
+    "nim_langserver",
+    merge_common(common, {
+      cmd = { "nimlangserver" },
+      filetypes = { "nim" },
+      root_markers = { "*.nimble", ".git" },
+    })
+  )
 
   -- C# / Roslyn. roslyn.nvim starts this server, so it is configured but not enabled here.
   vim.lsp.config(

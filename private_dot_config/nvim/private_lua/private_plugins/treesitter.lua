@@ -5,7 +5,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("nvim-treesitter").setup({})
-      require("nvim-treesitter").install({ "gleam" })
+      require("nvim-treesitter").install({ "gleam", "nim" })
     end,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {

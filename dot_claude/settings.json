@@ -7,7 +7,9 @@
       "Bash(sed)",
       "Bash(pnpm test)",
       "Bash(pnpm build)",
-      "Read(./.env.example)"
+      "Read(./.env.example)",
+      "Bash(python ~/.claude/skills/ui-ux-pro-max/scripts/search.py:*)",
+      "mcp__pencil"
     ],
     "deny": [
       "Bash(rm)",
@@ -32,6 +34,9 @@
   },
   "enabledPlugins": {
     "frontend-design@claude-code-plugins": true,
-    "typescript-lsp@claude-plugins-official": true
-  }
+    "typescript-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "medium",
+  "model": "opus"
 }

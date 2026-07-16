@@ -50,12 +50,13 @@ config.default_prog = { "/opt/homebrew/bin/herdr" }
 -- config.font = wezterm.font("SauceCodePro Nerd Font")
 -- config.font_size = 12
 config.font = wezterm.font_with_fallback({
-  { family = "PixelMplus12", weight = "Regular" },
-  { family = "Unifont-JP", weight = "Regular" },
+  -- { family = "PixelMplus12", weight = "Regular" },
+  -- { family = "Unifont-JP", weight = "Regular" },
   { family = "SauceCodePro Nerd Font", weight = "Regular" },
   { family = "Noto Color Emoji", weight = "Regular" },
 })
-config.font_size = 14
+config.font_size = 12
+-- config.font_size = 14
 -- config.font_size = 17
 
 -- Suppress missing glyph warnings
