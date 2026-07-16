@@ -1,0 +1,35 @@
+* {
+  // background: #1e1e2ecc;
+  background: #1e1e2eef;
+  // foreground: #cdd6f4ee;
+  foreground: #a64ad2ee;
+  // accent: #89b4faff;
+  text-color: @foreground;
+}
+window {
+  transparency: "real";
+  width: 40%;
+  padding: 18px;
+  border: 2px;
+  // border-color: @accent;
+  background-color: @background;
+}
+
+mainbox,
+inputbar,
+listview,
+message,
+element,
+entry,
+prompt,
+element-text,
+textbox {
+  background-color: transparent;
+}
+
+entry,
+prompt,
+element-text,
+textbox {
+  text-color: @foreground;
+}
