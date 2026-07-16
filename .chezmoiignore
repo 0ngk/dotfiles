@@ -3,6 +3,7 @@
 **/.localized
 **/node_modules
 **/.agents
+**/.serena
 
 
 .config/fish/fish_variables
@@ -17,6 +18,7 @@
 
 .config/nvim/.nvimlog
 .config/nvim/nvim.log
+.config/nvim/nvimlog
 
 
 .config/opencode/bun.lock

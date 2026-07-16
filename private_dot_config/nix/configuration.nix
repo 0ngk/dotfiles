@@ -167,6 +167,7 @@
 
     # System monitoring & info
     bottom
+    btop
     fastfetch
     glances
     onefetch
@@ -177,6 +178,8 @@
 
     # Misc utilities
     chezmoi
+    direnv
+    nix-direnv
     dstp
     gibo
     kanata
@@ -211,6 +214,12 @@
 
     CustomUserPreferences = {
       NSGlobalDomain = {
+        AppleLanguages = [
+          "zh-Hans-CN"
+          "en-US"
+        ];
+        AppleLocale = "zh_CN";
+
         # Hide the menu bar only while an app is in full screen.
         AppleMenuBarVisibleInFullscreen = false;
       };

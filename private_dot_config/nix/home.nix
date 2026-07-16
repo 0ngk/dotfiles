@@ -8,6 +8,9 @@
 
   # Environment variables
   home.sessionVariables = {
+    LANG = "en_US.UTF-8";
+    LC_MESSAGES = "en_US.UTF-8";
+
     # XDG Base Directory
     XDG_DATA_HOME = "$HOME/.local/share";
     XDG_CONFIG_HOME = "$HOME/.config";

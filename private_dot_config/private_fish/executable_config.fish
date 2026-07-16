@@ -281,3 +281,4 @@ if test "$__platform" = "macos"
 else
     fish_add_path -P -m -- /run/current-system/sw/bin
 end
+direnv hook fish | source

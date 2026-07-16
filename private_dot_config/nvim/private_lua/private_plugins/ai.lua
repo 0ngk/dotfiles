@@ -8,7 +8,7 @@ return {
   --     })
   --   end,
   -- },
-  { "github/copilot.vim", event = "InsertEnter" },
+  -- { "github/copilot.vim", event = "InsertEnter" },
   -- {
   --   "olimorris/codecompanion.nvim",
   --   enabled = false,
