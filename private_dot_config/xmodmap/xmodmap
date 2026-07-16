@@ -13,3 +13,9 @@ keysym Henkan_Mode = Escape NoSymbol Escape
 
 ! Kana/Hira -> Backspace
 keysym Hiragana_Katakana = BackSpace NoSymbol BackSpace
+
+! CapsLock
+keysym Caps_Lock = Control_L NoSymbol Control_L
+
+! \/_ -> _
+keycode 211 = underscore underscore

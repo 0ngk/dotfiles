@@ -4,6 +4,10 @@
 xset r rate 300 20
 
 
+# Load keybindings
+xmodmap ~/.config/xmodmap/xmodmap
+
+
 # IME
 export XMODIFIERS='@im=fcitx'
 export GTK_IM_MODULE=fcitx
@@ -13,15 +17,15 @@ export GLFW_IM_MODULE=ibus
 
 fcitx5 &
 
-# Load keybindings
-xmodmap ~/.config/xmodmap/xmodmap
 
 # Wallpaper
 xwallpaper --zoom "$HOME/Pictures/wallpapers/vars/wallpaper.png" &
 
+
 # Deamons
 ## Clipboard manager
 xfce4-clipman &
+
 
 ## Notification
 dunst &
@@ -30,8 +34,10 @@ dunst &
 ## Compositor
 picom &
 
+
 ## Bar
 ~/.config/polybar/launch.sh &
+
 
 # Start a wm
 exec i3

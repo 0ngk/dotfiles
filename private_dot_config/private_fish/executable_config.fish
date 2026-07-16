@@ -30,7 +30,7 @@ function __random_prompt_message
     set -l messages \
         "Eclipse first, the rest nowhere." \
         # "心不在焉，視而不見，聽而不聞，食而不知其味。" \
-        "期待ではなく準備をする。" \
+        # "期待ではなく準備をする。" \
         "遅い!!"
 
     set -l random_index (random 1 (count $messages))
