@@ -23,10 +23,11 @@ bindsym $mod+space exec --no-startup-id rofi -show drun
 ## Locker
 # lock with keyboard
 bindsym $mod+l exec --no-startup-id ~/.config/i3lock/lock.sh
+
 # lock when the laptop lid is closed
-exec --no-startup-id /usr/X11R6/bin/xidle \
-    -no \
-    -program "$HOME/.config/i3lock/lock.sh"
+exec_always --no-startup-id sh -c \
+    'pkill xidle 2>/dev/null; exec /usr/X11R6/bin/xidle \
+    -no -program "$HOME/.config/i3lock/lock.sh"'
 
 
 ## Screenshots
