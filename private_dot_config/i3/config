@@ -21,7 +21,12 @@ bindsym $mod+space exec --no-startup-id rofi -show drun
 
 
 ## Locker
+# lock with keyboard
 bindsym $mod+l exec --no-startup-id ~/.config/i3lock/lock.sh
+# lock when the laptop lid is closed
+exec --no-startup-id /usr/X11R6/bin/xidle \
+    -no \
+    -program "$HOME/.config/i3lock/lock.sh"
 
 
 ## Screenshots
@@ -32,8 +37,10 @@ bindsym Ctrl+Mod1+1 exec --no-startup-id /usr/local/bin/flameshot gui
 bindsym Ctrl+Mod1+2 exec --no-startup-id /usr/local/bin/flameshot full --clipboard
 
 # Flameshot: full-screen screenshot and save to a file
-bindsym Ctrl+Mod1+3 exec --no-startup-id \
-    /usr/local/bin/flameshot full --path "$HOME/Pictures/screenshots"
+bindsym Ctrl+Mod1+3 exec --no-startup-id sh -c \
+    'mkdir -p "$HOME/Pictures/screenshots" && \
+    /usr/local/bin/flameshot full \
+        --path "$HOME/Pictures/screenshots/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"'
 
 
 ## Screen recordings
