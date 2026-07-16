@@ -79,6 +79,13 @@ nwid=$(ifconfig "$iface" 2>/dev/null | awk '
               break
             }
           }
+        } else if (ssid !~ /^"/) {
+          for (j = i + 2; j <= NF; j++) {
+            if ($j == "chan" || $j == "bssid" || $j == "wpakey" || $j == "wpaprotos" || $j == "wpaciphers" || $j == "wpagroupcipher" || $j == "powersave" || $j == "mode") {
+              break
+            }
+            ssid = ssid " " $j
+          }
         }
 
         gsub(/^"/, "", ssid)

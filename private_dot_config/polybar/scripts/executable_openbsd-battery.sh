@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$(uname -s)" != "OpenBSD" ]; then
-  printf '%%{F#CD9FF5}%%{T2}%%{T-}%%{F-} --%%%%\n'
+  printf '%%{F#CD9FF5}%%{T2}%%{T-}%%{F-} --%%\n'
   exit 0
 fi
 
@@ -30,7 +30,7 @@ else
 fi
 
 if [ "$ac" = "1" ]; then
-  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} AC %s%%%%\n' "$icon" "$percent"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} AC %s%%\n' "$icon" "$percent"
 else
-  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} %s%%%%\n' "$icon" "$percent"
+  printf '%%{F#CD9FF5}%%{T2}%s%%{T-}%%{F-} %s%%\n' "$icon" "$percent"
 fi
