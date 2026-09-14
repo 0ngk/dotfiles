@@ -1,0 +1,23 @@
+#!/bin/sh
+
+class="$(xdotool getactivewindow getwindowclassname 2>/dev/null)" || exit 1
+
+case "$1:$class" in
+	copy:kitty)
+		key="ctrl+shift+c"
+		;;
+	paste:kitty)
+		key="ctrl+shift+v"
+		;;
+	copy:*)
+		key="ctrl+c"
+		;;
+	paste:*)
+		key="ctrl+v"
+		;;
+	*)
+		exit 2
+		;;
+esac
+
+exec xdotool key --clearmodifiers "$key"

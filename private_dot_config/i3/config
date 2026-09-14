@@ -20,35 +20,38 @@ hide_edge_borders none
 bindsym $mod+space exec --no-startup-id rofi -show drun
 
 
-## Locker
-# lock with keyboard
+# Locker
+## lock with keyboard
 bindsym $mod+l exec --no-startup-id ~/.config/i3lock/lock.sh
 
-# lock when the laptop lid is closed
+## lock when the laptop lid is closed
 exec_always --no-startup-id sh -c \
     'pkill xidle 2>/dev/null; exec /usr/X11R6/bin/xidle \
     -no -program "$HOME/.config/i3lock/lock.sh"'
 
+# Clipboard
+bindsym --release $mod+c exec --no-startup-id ~/.local/bin/super-clipboard copy
+bindsym --release $mod+v exec --no-startup-id ~/.local/bin/super-clipboard paste
 
-## Screenshots
-# Flameshot: interactive screenshot
+# Screenshots
+## Flameshot: interactive screenshot
 bindsym Ctrl+Mod1+1 exec --no-startup-id /usr/local/bin/flameshot gui
 
-# Flameshot: full-screen screenshot and copy to clipboard
+## Flameshot: full-screen screenshot and copy to clipboard
 bindsym Ctrl+Mod1+2 exec --no-startup-id /usr/local/bin/flameshot full --clipboard
 
-# Flameshot: full-screen screenshot and save to a file
+## Flameshot: full-screen screenshot and save to a file
 bindsym Ctrl+Mod1+3 exec --no-startup-id sh -c \
     'mkdir -p "$HOME/Pictures/screenshots" && \
     /usr/local/bin/flameshot full \
         --path "$HOME/Pictures/screenshots/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"'
 
 
-## Screen recordings
-# with desktop audio
+# Screen recordings
+## with desktop audio
 bindsym Ctrl+Mod1+Shift+1 exec --no-startup-id
 
-# without desktop audio
+## without desktop audio
 bindsym Ctrl+Mod1+Shift+2 exec --no-startup-id
 
 # default_border pixel 10
