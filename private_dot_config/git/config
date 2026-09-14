@@ -9,9 +9,11 @@
   cl       = clone
   clb      = clone -b
   cm       = commit
+  cma      = commit --amend
   cmm      = commit -m
   cmma     = commit -m "add"
   cmmu     = commit -m "update"
+  cp       = cherry-pick
   d        = diff
   del      = reset --soft HEAD^
   diffnpst = !git --no-pager diff --staged
@@ -20,7 +22,10 @@
   ev       = !git add -A && git commit -m "wip" && git push origin HEAD
   i        = init
   ic       = !git commit --allow-empty -m "Initial commit"
-  lognp    = !git --no-pager log
+  lg       = log
+  lgnp     = !git --no-pager log
+  lgp      = log -p
+  lgp1     = log -p -1
   mg       = merge
   mgt      = mergetool
   s        = status
@@ -33,11 +38,14 @@
   ploh     = pull origin HEAD
   plus     = pull upstream
   rb       = rebase
+  rs       = restore
   si       = switch
   sic      = switch -c
   sim      = switch main
   sid      = switch develop
+  so       = show
   us       = reset HEAD
+  wt       = worktree
 
 [user]
   name       = 音㦡
@@ -60,6 +68,9 @@
 
 [init]
   defaultBranch = main
+
+[push]
+  useForceIfIncludes = true
 
 [tag]
   gpgsign = true
@@ -84,9 +95,14 @@
 [delta]
 	navigate = true
 	dark = true
+  keep-plus-minus-markers = true
 
 [includeIf "gitdir:~/sc/"]
   path = ~/sc/_git/config
 
 [includeIf "gitdir:~/pgm/dev/css/"]
   path = ~/pgm/dev/css/_git/config
+
+[includeIf "gitdir:~/pgm/work/"]
+  path = ~/pgm/work/_git/config
+

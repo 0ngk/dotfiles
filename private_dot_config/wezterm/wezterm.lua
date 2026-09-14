@@ -53,6 +53,7 @@ config.font = wezterm.font_with_fallback({
   -- { family = "PixelMplus12", weight = "Regular" },
   -- { family = "Unifont-JP", weight = "Regular" },
   { family = "SauceCodePro Nerd Font", weight = "Regular" },
+  { family = "VL PGothic", weight = "Regular" },
   { family = "Noto Color Emoji", weight = "Regular" },
 })
 config.font_size = 12

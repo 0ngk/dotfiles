@@ -265,6 +265,11 @@ function tz
   echo $argv
 end
 
+# git worktree
+function gwt
+  git worktree add -b "local/$argv[3]" "../secure/$argv[1]/$argv[2]" "$argv[3]"
+end
+
 # zoxide (must be placed in the last line)
 zoxide init fish | source
 mise activate fish | source

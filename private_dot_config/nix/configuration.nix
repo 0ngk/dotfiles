@@ -67,6 +67,8 @@
     tree
     yazi
 
+    opencode
+
     # Terminal sessions
     byobu
     # kitty
@@ -97,7 +99,6 @@
     ni
     phpPackages.composer
     pipx
-    pnpm
     rebar3
     typescript
     uv
@@ -194,11 +195,16 @@
 
   # System defaults
   system.defaults = {
+    menuExtraClock = {
+      Show24Hour = true;
+    };
+
     # Global domain settings
     NSGlobalDomain = {
       # Interface
       AppleInterfaceStyle = "Dark";
       AppleShowAllExtensions = true;
+      AppleICUForce24HourTime = true;
 
       # Keyboard
       ApplePressAndHoldEnabled = false;
@@ -218,13 +224,19 @@
     CustomUserPreferences = {
       NSGlobalDomain = {
         AppleLanguages = [
-          "zh-Hans-CN"
           "en-US"
         ];
-        AppleLocale = "zh_CN";
+        AppleLocale = "en-US";
 
         # Hide the menu bar only while an app is in full screen.
         AppleMenuBarVisibleInFullscreen = false;
+      };
+    };
+
+    # The lock screen reads the system-wide global preferences.
+    CustomSystemPreferences = {
+      "/Library/Preferences/.GlobalPreferences" = {
+        AppleICUForce24HourTime = true;
       };
     };
 
@@ -328,6 +340,7 @@
       "jdtls"
       "mise"
       "npm"
+      "pnpm"
       "yarn"
 
       # Developer tools
@@ -341,8 +354,8 @@
 
       # AI / agent CLIs
       "agent-browser"
-      "opencode"
       "openclaw-cli"
+      "pi-coding-agent"
     ];
 
     # Cask applications
@@ -471,6 +484,7 @@
       "codex-app"
       "copilot-cli"
       "openclaw"
+      "antigravity"
     ];
   };
 

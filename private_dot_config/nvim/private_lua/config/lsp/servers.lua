@@ -18,6 +18,7 @@ M.enabled = {
   "emmylua_ls",
   "bashls",
   "yamlls",
+  "jsonls",
   "nim_langserver",
   "fsautocomplete",
   "expert",
@@ -136,6 +137,9 @@ function M.setup(opts)
         local root = vim.fs.root(bufnr, { "tsconfig.json", "jsconfig.json", "package.json", ".git" })
         if root then
           on_dir(root)
+        else
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          on_dir(vim.fn.fnamemodify(fname, ":h"))
         end
       end,
       workspace_required = true,
@@ -209,6 +213,19 @@ function M.setup(opts)
 
   -- YAML
   vim.lsp.config("yamlls", common)
+
+  -- JSON
+  vim.lsp.config(
+    "jsonls",
+    merge_common(common, {
+      settings = {
+        json = {
+          schemas = require("schemastore").json.schemas(),
+          validate = { enable = true },
+        },
+      },
+    })
+  )
 
   -- Nim
   vim.lsp.config(

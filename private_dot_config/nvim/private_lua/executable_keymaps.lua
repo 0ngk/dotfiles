@@ -33,6 +33,26 @@ local function smart_close()
   vim.cmd("q")
 end
 
+local function copy_project_relative_path()
+  local file_path = vim.api.nvim_buf_get_name(0)
+  if file_path == "" then
+    vim.notify("Current buffer has no file path", vim.log.levels.WARN)
+    return
+  end
+
+  file_path = vim.fs.normalize(vim.fn.fnamemodify(file_path, ":p"))
+  local project_root = vim.fs.root(file_path, { ".git" }) or vim.fn.getcwd()
+  local relative_path = vim.fs.relpath(project_root, file_path)
+
+  if not relative_path then
+    vim.notify("Could not resolve a project-relative path", vim.log.levels.WARN)
+    return
+  end
+
+  vim.fn.setreg("+", relative_path)
+  vim.notify(("Copied: %s"):format(relative_path))
+end
+
 -- Key
 keymap("i", "<Right>", "->")
 keymap("i", "<S-Right>", "=>")
@@ -47,16 +67,19 @@ keymap("v", "<Right>", ">", { silent = true })
 keymap("n", "q", "<Nop>")
 
 -- Insert modeを抜けたら英数入力に切り替え（非同期）
-local im_select_bin = vim.fn.exepath("im-select")
-local im_select_target = "com.apple.keylayout.UnicodeHexInput"
-local im_select_inflight = false
-local im_select_warned = false
+local os_name = (vim.uv or vim.loop).os_uname().sysname
+local ime_switcher = os_name == "Darwin" and { command = "im-select", args = { "com.apple.keylayout.UnicodeHexInput" } }
+  or os_name == "OpenBSD" and { command = "fcitx5-remote", args = { "-c" } }
+  or nil
+local ime_switcher_bin = ime_switcher and vim.fn.exepath(ime_switcher.command) or ""
+local ime_switch_inflight = false
+local ime_switch_warned = false
 
-local function notify_im_select_failure(msg)
-  if im_select_warned then
+local function notify_ime_switch_failure(msg)
+  if ime_switch_warned then
     return
   end
-  im_select_warned = true
+  ime_switch_warned = true
   vim.schedule(function()
     vim.notify(msg, vim.log.levels.WARN)
   end)
@@ -64,28 +87,29 @@ end
 
 vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
-    if im_select_inflight then
+    if not ime_switcher or ime_switch_inflight then
       return
     end
 
-    if im_select_bin == "" then
-      notify_im_select_failure("im-select not found in PATH; skipped IME switch on InsertLeave")
+    if ime_switcher_bin == "" then
+      notify_ime_switch_failure(("%s not found in PATH; skipped IME switch on InsertLeave"):format(ime_switcher.command))
       return
     end
 
-    im_select_inflight = true
-    local job_id = vim.fn.jobstart({ im_select_bin, im_select_target }, {
+    ime_switch_inflight = true
+    local command = vim.list_extend({ ime_switcher_bin }, ime_switcher.args)
+    local job_id = vim.fn.jobstart(command, {
       on_exit = function(_, code)
-        im_select_inflight = false
+        ime_switch_inflight = false
         if code ~= 0 then
-          notify_im_select_failure("Failed to switch IME with im-select on InsertLeave")
+          notify_ime_switch_failure(("Failed to switch IME with %s on InsertLeave"):format(ime_switcher.command))
         end
       end,
     })
 
     if job_id <= 0 then
-      im_select_inflight = false
-      notify_im_select_failure("Failed to start im-select job on InsertLeave")
+      ime_switch_inflight = false
+      notify_ime_switch_failure(("Failed to start %s job on InsertLeave"):format(ime_switcher.command))
     end
   end,
 })
@@ -94,6 +118,8 @@ keymap("i", "<Esc>", "<Esc>", { silent = true })
 -- Basic
 keymap("i", "jk", "<Esc>", { silent = true, desc = "Esc" })
 keymap("i", "jj", "<Esc>", { silent = true, desc = "Esc" })
+keymap("n", "<C-p>", "<C-i>", { silent = true, desc = "Jump List Forward" })
+keymap("n", "<leader>p", copy_project_relative_path, { silent = true, desc = "Copy Project-Relative File Path" })
 keymap("n", "<F2>", "zr<cr>", { silent = true, desc = "Expand" })
 keymap("n", "<F3>", ":vs<cr>", { silent = true, desc = "Split vertically" })
 keymap("n", "<F4>", ":sp<cr>", { silent = true, desc = "Split horizonaly" })
@@ -219,4 +245,3 @@ keymap("n", "<leader>lp", ":LivePreview start<cr>", { desc = "Live Preview" })
 
 -- denippet.vim
 keymap("i", "<C-l>", "<Plug>(denippet-expand)", { desc = "Expand snippet" })
-vim.keymap.set("n", "<C-i>", "<C-i>")

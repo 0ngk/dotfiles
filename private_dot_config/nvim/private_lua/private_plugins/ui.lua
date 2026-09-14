@@ -136,7 +136,7 @@ return {
       -- Cursor/visual highlights
       -- vim.api.nvim_set_hl(0, "CursorLine", { bg = "#e9d9ee", blend = 30 })
       -- vim.api.nvim_set_hl(0, "CursorColumn", { bg = "#e9d9ee", blend = 30 })
-      vim.api.nvim_set_hl(0, "Visual", { bg = "#ffc4d6", blend = 90 })
+      vim.api.nvim_set_hl(0, "Visual", { bg = "#3a4055" })
       -- Statusline font color to black
       vim.api.nvim_set_hl(0, "StatusLine", { fg = "#000000" })
       vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#000000" })

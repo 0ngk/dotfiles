@@ -134,4 +134,10 @@ return {
     version = "1.*",
     opts = {},
   },
+
+  -- JSON
+  {
+    "b0o/schemastore.nvim",
+    ft = { "json", "jsonc" },
+  },
 }
