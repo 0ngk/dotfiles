@@ -2,22 +2,34 @@
 
 class="$(xdotool getactivewindow getwindowclassname 2>/dev/null)" || exit 1
 
-case "$1:$class" in
-	copy:kitty)
-		key="ctrl+shift+c"
-		;;
-	paste:kitty)
-		key="ctrl+shift+v"
-		;;
-	copy:*)
-		key="ctrl+c"
-		;;
-	paste:*)
-		key="ctrl+v"
-		;;
-	*)
-		exit 2
-		;;
-esac
+send_key() {
+  xdotool keydown "$1"
+  xdotool key "$2"
+  xdotool keyup "$1"
+}
 
-exec xdotool key --clearmodifiers "$key"
+case "$1:$class" in
+  copy:kitty)
+    xdotool keydown Control_L
+    xdotool keydown Shift_L
+    xdotool key c
+    xdotool keyup Shift_L
+    xdotool keyup Control_L
+    ;;
+  paste:kitty)
+    xdotool keydown Control_L
+    xdotool keydown Shift_L
+    xdotool key v
+    xdotool keyup Shift_L
+    xdotool keyup Control_L
+    ;;
+  copy:*)
+    send_key Control_L c
+    ;;
+  paste:*)
+    send_key Control_L v
+    ;;
+  *)
+    exit 2
+    ;;
+esac
