@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+
+import argparse
+import getpass
+import hashlib
+import subprocess
+import sys
+
+
+def read_password() -> str:
+    try:
+        return getpass.getpass("Password: ")
+    except (EOFError, KeyboardInterrupt):
+        print(file=sys.stderr)
+        raise SystemExit(130)
+
+
+def derive_wpa_psk(ssid: str, password: str) -> str:
+    ssid_bytes = ssid.encode("utf-8")
+    password_bytes = password.encode("utf-8")
+
+    if not 1 <= len(ssid_bytes) <= 32:
+        raise ValueError("SSID must be 1..32 bytes")
+
+    if not 8 <= len(password_bytes) <= 63:
+        raise ValueError("WPA passphrase must be 8..63 bytes")
+
+    if any(byte < 0x20 or byte == 0x7F for byte in password_bytes):
+        raise ValueError("WPA passphrase must not contain control characters")
+
+    return hashlib.pbkdf2_hmac(
+        "sha1",
+        password_bytes,
+        ssid_bytes,
+        4096,
+        dklen=32,
+    ).hex()
+
+
+def derive_nt_hash(password: str) -> str:
+    password_utf16le = password.encode("utf-16le")
+
+    try:
+        result = subprocess.run(
+            ["openssl", "dgst", "-md4", "-binary"],
+            input=password_utf16le,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
+        )
+    except FileNotFoundError:
+        raise RuntimeError("openssl(1) was not found")
+    except subprocess.CalledProcessError as error:
+        message = error.stderr.decode(errors="replace").strip()
+        raise RuntimeError(f"openssl failed: {message}")
+
+    if len(result.stdout) != 16:
+        raise RuntimeError("unexpected MD4 output length")
+
+    return result.stdout.hex()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        prog="wificred",
+        description="Derive Wi-Fi credentials without storing plaintext passwords.",
+    )
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    psk_parser = subparsers.add_parser(
+        "psk",
+        help="derive a WPA/WPA2 PSK",
+    )
+    psk_parser.add_argument(
+        "ssid",
+        help="SSID used as the PBKDF2 salt",
+    )
+    psk_parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="omit the OpenBSD ifconfig 0x prefix",
+    )
+
+    subparsers.add_parser(
+        "mschapv2",
+        help="derive an NT Password Hash for MSCHAP/MSCHAPv2",
+    )
+
+    args = parser.parse_args()
+    password = read_password()
+
+    try:
+        if args.command == "psk":
+            psk = derive_wpa_psk(args.ssid, password)
+
+            if args.raw:
+                print(psk)
+            else:
+                print(f"0x{psk}")
+
+        elif args.command == "mschapv2":
+            nt_hash = derive_nt_hash(password)
+            print(f"hash:{nt_hash}")
+
+    except (ValueError, RuntimeError) as error:
+        print(f"wificred: {error}", file=sys.stderr)
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
