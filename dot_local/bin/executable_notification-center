@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+"""
+Minimal notification center for OpenBSD + X11/i3 + dunst + rofi.
+
+Dependencies:
+    pkg_add dunst rofi py3-dbus
+
+The script talks directly to dunst's org.dunstproject.cmd0 D-Bus interface.
+It intentionally does not use `dunstctl history`, because that command
+depends on `busctl`, which is generally unavailable on OpenBSD.
+"""
+
+from __future__ import annotations
+
+import html
+import os
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+
+try:
+    import dbus
+except ImportError:
+    print(
+        "notification-center: Python D-Bus bindings are missing.\n"
+        "Install them with: doas pkg_add py3-dbus",
+        file=sys.stderr,
+    )
+    raise SystemExit(1)
+
+
+DBUS_NAME = "org.freedesktop.Notifications"
+DBUS_PATH = "/org/freedesktop/Notifications"
+DUNST_INTERFACE = "org.dunstproject.cmd0"
+
+ROFI_PROMPT = "Notifications"
+ROFI_THEME = os.path.expanduser("~/.config/rofi/notification-center.rasi")
+
+
+@dataclass(frozen=True)
+class Notification:
+    id: int
+    appname: str
+    summary: str
+    body: str
+    urgency: str
+
+
+def die(message: str) -> "NoReturn":
+    print(f"notification-center: {message}", file=sys.stderr)
+    raise SystemExit(1)
+
+
+def get_dunst_interface():
+    try:
+        bus = dbus.SessionBus()
+        obj = bus.get_object(DBUS_NAME, DBUS_PATH)
+        return dbus.Interface(obj, dbus_interface=DUNST_INTERFACE)
+    except dbus.DBusException as exc:
+        die(f"cannot connect to dunst: {exc}")
+
+
+def text(value) -> str:
+    return str(value) if value is not None else ""
+
+
+def load_history(interface) -> list[Notification]:
+    try:
+        rows = interface.NotificationListHistory()
+    except dbus.DBusException as exc:
+        die(f"failed to read dunst history: {exc}")
+
+    notifications: list[Notification] = []
+
+    for row in rows:
+        notifications.append(
+            Notification(
+                id=int(row.get("id", 0)),
+                appname=text(row.get("appname", "")),
+                summary=text(row.get("summary", "")),
+                body=text(row.get("body", "")),
+                urgency=text(row.get("urgency", "normal")),
+            )
+        )
+
+    return notifications
+
+
+def one_line(value: str) -> str:
+    return " ".join(value.replace("\x00", "").split())
+
+
+def trim(value: str, length: int) -> str:
+    value = one_line(value)
+    if len(value) <= length:
+        return value
+    return value[: length - 1] + "…"
+
+
+def rofi_markup(value: str) -> str:
+    return html.escape(value, quote=False)
+
+
+def format_notification(n: Notification) -> str:
+    app = trim(n.appname or "unknown", 18)
+    summary = trim(n.summary or "(no summary)", 52)
+    body = trim(n.body, 72)
+
+    if body:
+        return (
+            f"<b>{rofi_markup(app)}</b>  {rofi_markup(summary)}"
+            f"\n<span size='small'>{rofi_markup(body)}</span>"
+        )
+
+    return f"<b>{rofi_markup(app)}</b>  {rofi_markup(summary)}"
+
+
+def run_rofi(lines: list[str], prompt: str, message: str | None = None) -> tuple[int, int | None]:
+    if shutil.which("rofi") is None:
+        die("rofi is not installed; run: doas pkg_add rofi")
+
+    cmd = [
+        "rofi",
+        "-dmenu",
+        "-i",
+        "-markup-rows",
+        "-format",
+        "i",
+        "-p",
+        prompt,
+        "-kb-custom-1",
+        "Control+d",
+        "-kb-custom-2",
+        "Control+Shift+d",
+        "-kb-custom-3",
+        "Control+r",
+    ]
+
+    if message:
+        cmd += ["-mesg", message]
+
+    if os.path.isfile(ROFI_THEME):
+        cmd += ["-theme", ROFI_THEME]
+
+    proc = subprocess.run(
+        cmd,
+        input="\n".join(lines),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+
+    selected = proc.stdout.strip()
+    index = int(selected) if selected.isdigit() else None
+    return proc.returncode, index
+
+
+def pop_history(interface, notification_id: int) -> None:
+    interface.NotificationPopHistory(dbus.UInt32(notification_id))
+
+
+def remove_history(interface, notification_id: int) -> None:
+    interface.NotificationRemoveFromHistory(dbus.UInt32(notification_id))
+
+
+def clear_history(interface) -> None:
+    interface.NotificationClearHistory()
+
+
+def main() -> None:
+    if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
+        die(
+            "DBUS_SESSION_BUS_ADDRESS is not set. "
+            "Start the X session under dbus-launch."
+        )
+
+    interface = get_dunst_interface()
+
+    while True:
+        history = load_history(interface)
+
+        if not history:
+            run_rofi(
+                ["No notifications"],
+                ROFI_PROMPT,
+                "Enter: restore   Ctrl+D: delete   Ctrl+Shift+D: clear all",
+            )
+            return
+
+        rows = [format_notification(n) for n in history]
+        status, index = run_rofi(
+            rows,
+            ROFI_PROMPT,
+            "Enter: restore   Ctrl+D: delete   Ctrl+Shift+D: clear all   Ctrl+R: refresh",
+        )
+
+        # Esc / normal cancellation.
+        if status == 1:
+            return
+
+        # Ctrl+Shift+D: clear all.
+        if status == 11:
+            clear_history(interface)
+            continue
+
+        # Ctrl+R: refresh.
+        if status == 12:
+            continue
+
+        if index is None or index < 0 or index >= len(history):
+            return
+
+        selected = history[index]
+
+        # Enter: restore the selected notification.
+        if status == 0:
+            pop_history(interface, selected.id)
+            return
+
+        # Ctrl+D: delete the selected history entry.
+        if status == 10:
+            remove_history(interface, selected.id)
+            continue
+
+        return
+
+
+if __name__ == "__main__":
+    main()
