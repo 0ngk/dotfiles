@@ -267,7 +267,7 @@ end
 
 # git worktree
 function gwt
-  git worktree add -b "local/$argv[3]" "../secure/$argv[1]/$argv[2]" "$argv[3]"
+  git worktree add -b "local/$argv[3]" "../secure/$argv[1]/$argv[3]" "$argv[2]"
 end
 
 # zoxide (must be placed in the last line)

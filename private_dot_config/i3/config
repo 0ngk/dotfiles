@@ -33,6 +33,9 @@ exec_always --no-startup-id sh -c \
 bindsym --release $mod+c exec --no-startup-id ~/.local/bin/super-clipboard copy
 bindsym --release $mod+v exec --no-startup-id ~/.local/bin/super-clipboard paste
 
+# Notifications
+bindsym $mod+n exec --no-startup-id ~/.local/bin/notification-center
+
 # Screenshots
 ## Flameshot: interactive screenshot
 bindsym Ctrl+Mod1+1 exec --no-startup-id /usr/local/bin/flameshot gui
