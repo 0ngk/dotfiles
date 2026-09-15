@@ -1,0 +1,60 @@
+configuration {
+    show-icons: false;
+    display-drun: "";
+}
+
+* {
+    font: "sans 11";
+    spacing: 0;
+    padding: 0;
+}
+
+window {
+    location: northeast;
+    anchor: northeast;
+    width: 420px;
+    height: 70%;
+    x-offset: -12px;
+    y-offset: 36px;
+    border: 1px;
+    padding: 10px;
+}
+
+mainbox {
+    spacing: 8px;
+}
+
+inputbar {
+    padding: 8px;
+    spacing: 8px;
+}
+
+prompt {
+    enabled: true;
+}
+
+entry {
+    placeholder: "Search";
+}
+
+message {
+    padding: 6px 8px;
+}
+
+listview {
+    lines: 10;
+    columns: 1;
+    fixed-height: false;
+    scrollbar: true;
+    spacing: 6px;
+}
+
+element {
+    padding: 10px;
+    spacing: 6px;
+}
+
+element-text {
+    vertical-align: 0.5;
+    markup: true;
+}
