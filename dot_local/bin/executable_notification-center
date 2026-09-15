@@ -116,7 +116,9 @@ def format_notification(n: Notification) -> str:
     return f"<b>{rofi_markup(app)}</b>  {rofi_markup(summary)}"
 
 
-def run_rofi(lines: list[str], prompt: str, message: str | None = None) -> tuple[int, int | None]:
+def run_rofi(
+    lines: list[str], prompt: str, message: str | None = None
+) -> tuple[int, int | None]:
     if shutil.which("rofi") is None:
         die("rofi is not installed; run: doas pkg_add rofi")
 
@@ -130,11 +132,11 @@ def run_rofi(lines: list[str], prompt: str, message: str | None = None) -> tuple
         "-p",
         prompt,
         "-kb-custom-1",
-        "Control+d",
+        "Alt+d",
         "-kb-custom-2",
-        "Control+Shift+d",
+        "Alt+Shift+d",
         "-kb-custom-3",
-        "Control+r",
+        "Alt+r",
     ]
 
     if message:
@@ -185,7 +187,7 @@ def main() -> None:
             run_rofi(
                 ["No notifications"],
                 ROFI_PROMPT,
-                "Enter: restore   Ctrl+D: delete   Ctrl+Shift+D: clear all",
+                "Enter: restore   Alt+D: delete   Alt+Shift+D: clear all",
             )
             return
 
@@ -193,7 +195,7 @@ def main() -> None:
         status, index = run_rofi(
             rows,
             ROFI_PROMPT,
-            "Enter: restore   Ctrl+D: delete   Ctrl+Shift+D: clear all   Ctrl+R: refresh",
+            "Enter: restore   Alt+D: delete   Alt+Shift+D: clear all   Alt+R: refresh",
         )
 
         # Esc / normal cancellation.
