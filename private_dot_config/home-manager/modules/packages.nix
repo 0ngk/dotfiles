@@ -51,7 +51,7 @@ with pkgs; [
   # Language runtimes & SDKs
   clang-tools
   dotnet-sdk_10
-  erlang
+  beamPackages.erlang
   gcc
   go
   # javaPackages.compiler.openjdk21
