@@ -31,9 +31,13 @@
   };
 
   # System packages
-  environment.systemPackages = import ../../modules/packages.nix {
-    inherit pkgs lib;
-  };
+  environment.systemPackages =
+    (import ../../modules/packages.nix {
+      inherit pkgs lib;
+    })
+    ++ (import ../../modules/packages-darwin.nix {
+      inherit pkgs lib;
+    });
 
   # System defaults
   system.defaults = {
