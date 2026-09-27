@@ -66,6 +66,7 @@
     tre-command
     tree
     yazi
+    exiftool
 
     opencode
 
@@ -378,7 +379,7 @@
       "intellij-idea"
       "intellij-idea-ce"
       "jetbrains-toolbox"
-      "rustrover"
+      # "rustrover"
       "visual-studio-code"
       "zed"
 
@@ -421,10 +422,10 @@
 
       # System utilities
       "alcom"
-      "alt-tab"
-      "amethyst"
+      # "alt-tab"
+      # "amethyst"
       "azookey"
-      "background-music"
+      # "background-music"
       "commander-one"
       "jordanbaird-ice"
       "karabiner-elements"
@@ -432,7 +433,7 @@
       "maccy"
       "openmtp"
       "raycast"
-      "rectangle"
+      # "rectangle"
 
       # Security & networking
       # "1password"
@@ -462,7 +463,7 @@
       "vlc"
 
       # Games
-      "epic-games"
+      # "epic-games"
       "minecraft"
       "prismlauncher"
       "steam"
@@ -477,7 +478,6 @@
 
       # AI apps
       "chatgpt"
-      "chatgpt-atlas"
       "claude"
       "claude-code"
       "codex"

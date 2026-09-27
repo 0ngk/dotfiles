@@ -26,32 +26,32 @@ set -g theme_newline_cursor            yes
 
 # Prompt separator line between cwd and input
 # Random message function
-function __random_prompt_message
-    set -l messages \
-        # "Eclipse first, the rest nowhere." \
-        # "心不在焉，視而不見，聽而不聞，食而不知其味。" \
-        # "期待ではなく準備をする。" \
-        # "遅い!!" \
-"    雑念の排除 基本動作の徹底\n
-      雑念の排除 基本動作の徹底\n
-        雑念の排除 基本動作の徹底\n
-          雑念の排除 基本動作の徹底\n
-            雑念の排除 基本動作の徹底\n
-              雑念の排除 基本動作の徹底\n
-            雑念の排除 基本動作の徹底\n
-          雑念の排除 基本動作の徹底\n
-        雑念の排除 基本動作の徹底\n
-      雑念の排除 基本動作の徹底\n
-    雑念の排除 基本動作の徹底\n"
-
-    set -l random_index (random 1 (count $messages))
-    echo $messages[$random_index]
-end
+# function __random_prompt_message
+#     set -l messages \
+#         # "Eclipse first, the rest nowhere." \
+#         # "心不在焉，視而不見，聽而不聞，食而不知其味。" \
+#         # "期待ではなく準備をする。" \
+#         # "遅い!!" \
+# "    雑念の排除 基本動作の徹底\n
+#       雑念の排除 基本動作の徹底\n
+#         雑念の排除 基本動作の徹底\n
+#           雑念の排除 基本動作の徹底\n
+#             雑念の排除 基本動作の徹底\n
+#               雑念の排除 基本動作の徹底\n
+#             雑念の排除 基本動作の徹底\n
+#           雑念の排除 基本動作の徹底\n
+#         雑念の排除 基本動作の徹底\n
+#       雑念の排除 基本動作の徹底\n
+#     雑念の排除 基本動作の徹底\n"
+#
+#     set -l random_index (random 1 (count $messages))
+#     echo $messages[$random_index]
+# end
 
 # Update prompt message on every prompt display
-function __update_random_prompt --on-event fish_prompt
-    set -g theme_newline_prompt (begin; set_color --bold brcyan; printf '%s\n' (__random_prompt_message); set_color normal; printf '\n'; set_color --bold brcyan; printf '%s' '\n> '; set_color normal; end)
-end
+# function __update_random_prompt --on-event fish_prompt
+#     set -g theme_newline_prompt (begin; set_color --bold brcyan; printf '%s\n' (__random_prompt_message); set_color normal; printf '\n'; set_color --bold brcyan; printf '%s' '\n> '; set_color normal; end)
+# end
 
 
 fish_add_path $HOME/.local/bin

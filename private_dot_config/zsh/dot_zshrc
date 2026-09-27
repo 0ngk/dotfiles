@@ -23,7 +23,7 @@ fi
 ZCONF_DIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/conf.d"
 
 # Source all .zsh files in conf.d/ directory
-if [[ -d "$ZCONF_DIR" ]]; then
+if [[ -d $ZCONF_DIR ]]; then
   for config_file in "$ZCONF_DIR"/*.zsh(N); do
     # Debug logging (uncomment if needed)
     # [[ -n "$ZSH_DEBUG" ]] && echo "Loading: $config_file"
@@ -33,3 +33,5 @@ if [[ -d "$ZCONF_DIR" ]]; then
 fi
 
 unset ZCONF_DIR
+
+eval "$(direnv hook zsh)"
