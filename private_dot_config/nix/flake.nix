@@ -20,20 +20,36 @@
     home-manager,
   }: let
     username = "rei";
-    system = "aarch64-darwin";
+    darwinSystem = "aarch64-darwin";
+    alpineSystem = "x86_64-linux";
   in {
     darwinConfigurations.MacBookAir = nix-darwin.lib.darwinSystem {
-      inherit system;
+      system = darwinSystem;
       specialArgs = {inherit inputs username;};
       modules = [
-        ./configuration.nix
+        ./hosts/darwin/MacBookAir.nix
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "bak";
-          home-manager.users.${username} = import ./home.nix;
+          home-manager.extraSpecialArgs = {inherit inputs username;};
+          home-manager.users.${username} = {
+            imports = [
+              ./home/common.nix
+              ./home/darwin.nix
+            ];
+          };
         }
+      ];
+    };
+
+    homeConfigurations."${username}@alpine" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.${alpineSystem};
+      extraSpecialArgs = {inherit inputs username;};
+      modules = [
+        ./home/common.nix
+        ./home/alpine.nix
       ];
     };
   };
