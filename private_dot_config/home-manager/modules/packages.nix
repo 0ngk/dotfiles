@@ -117,7 +117,6 @@ with pkgs; [
   nmap
   socat
   wget
-  wireshark-cli
 
   # Data, text & documents
   jq

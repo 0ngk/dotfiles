@@ -8,4 +8,7 @@ with pkgs; [
   docker-compose
   colima
   lima
+
+  # Network & HTTP
+  wireshark-cli
 ]
