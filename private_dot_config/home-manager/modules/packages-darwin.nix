@@ -9,6 +9,6 @@ with pkgs; [
   colima
   lima
 
-  # Network & HTTP
+  # Network
   wireshark-cli
 ]

@@ -1,5 +1,8 @@
 {pkgs, ...}:
 with pkgs; [
-  # Network & HTTP
-  wireshark
+  # Security
+  bitwarden-desktop
+
+  # Launcher
+  vicinae
 ]

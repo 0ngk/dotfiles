@@ -6,10 +6,16 @@ with pkgs; [
   android-tools
   age
 
+  # Shells
+  bash
+  fish
+  zsh
+
   # Editors
   emacs
   helix
   vim
+  neovim
 
   # Version control
   commitizen
@@ -62,12 +68,14 @@ with pkgs; [
   lua
   nodejs
   php
-  python313Packages.ipython
+  python314Packages.ipython
   python315
+  rustup
 
   # Package managers & build tools
-  # gradle
+  gradle
   maven
+  mise
   ni
   phpPackages.composer
   pipx
@@ -110,7 +118,7 @@ with pkgs; [
   # Developer infrastructure
   supabase-cli
 
-  # Network & HTTP
+  # Network
   curl
   gping
   httpie
@@ -126,7 +134,9 @@ with pkgs; [
   # poppler-utils
   tesseract
   typst
+  unzip
   yq
+  zip
   zola
 
   # Media processing
