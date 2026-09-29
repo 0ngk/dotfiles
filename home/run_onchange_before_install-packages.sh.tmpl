@@ -3,7 +3,7 @@ set -eu
 
 {{ if eq .chezmoi.os "linux" -}}
 if [ -f /etc/alpine-release ]; then
-    sudo apk add \
+    doas apk add \
 {{ range .packages.apk -}}
         {{ . }} \
 {{ end -}}
