@@ -58,7 +58,6 @@ packages:
     - waybar
     - wine
     - wireless-regdb
-    - wireshark
     - wl-clipboard
     - wmenu
     - wpa_supplicant
