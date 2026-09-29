@@ -93,7 +93,7 @@ with pkgs; [
   lemminx
   phpactor
   roslyn-ls
-  rust-analyzer
+  # rust-analyzer
   sqls
   tinymist
   tree-sitter
@@ -113,6 +113,7 @@ with pkgs; [
   shellcheck
   shfmt
   stylua
+  tombi
   typos
 
   # Developer infrastructure

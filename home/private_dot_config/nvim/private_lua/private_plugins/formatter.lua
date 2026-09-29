@@ -21,7 +21,7 @@ local function js_ts_json_formatter(bufnr)
     return { "deno_fmt" }
   end
 
-  return { "biome" }
+  return { "biome-check" }
 end
 
 local function is_gradle_kotlin_dsl(bufnr)
@@ -102,9 +102,9 @@ return {
         typescriptreact = js_ts_json_formatter,
         json = js_ts_json_formatter,
         jsonc = js_ts_json_formatter,
-        css = { "biome" },
-        scss = { "biome" },
-        sass = { "biome" },
+        css = { "biome-check" },
+        scss = { "biome-check" },
+        sass = { "biome-check" },
         python = { "ruff_format" },
         gleam = { "gleam" },
         nim = { "nimpretty" },
@@ -121,6 +121,7 @@ return {
         cs = { "csharpier" },
         fsharp = { "fantomas" },
         elixir = { "mix" },
+        toml = { "tombi" },
         ["*"] = { "trim_whitespace" },
       },
       default_format_opts = {

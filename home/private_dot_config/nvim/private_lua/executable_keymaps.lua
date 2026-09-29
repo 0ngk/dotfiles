@@ -120,7 +120,6 @@ keymap("i", "jk", "<Esc>", { silent = true, desc = "Esc" })
 keymap("i", "jj", "<Esc>", { silent = true, desc = "Esc" })
 keymap("n", "<C-p>", "<C-i>", { silent = true, desc = "Jump List Forward" })
 keymap("n", "<leader>p", copy_project_relative_path, { silent = true, desc = "Copy Project-Relative File Path" })
-keymap("n", "<F2>", "zr<cr>", { silent = true, desc = "Expand" })
 keymap("n", "<F3>", ":vs<cr>", { silent = true, desc = "Split vertically" })
 keymap("n", "<F4>", ":sp<cr>", { silent = true, desc = "Split horizonaly" })
 keymap("n", "<leader>s", ":w<cr>", { silent = true, desc = "Save" }) -- 保存
@@ -131,8 +130,8 @@ keymap("n", "<leader>q", ":qa<cr>", { silent = true, desc = "Close all the windo
 -- Window
 keymap("n", "<C-l>", "<C-w>w", { silent = true }) -- ウィンドウ移動
 keymap("n", "<C-h>", "<C-w>W", { silent = true }) -- ウィンドウ移動
-keymap("n", "<C-k>", ":vs<cr>", { silent = true }) -- ウィンドウを水平に分割
-keymap("n", "<C-j>", ":sp<cr>", { silent = true }) -- ウィンドウを水平に分割
+-- keymap("n", "<C-k>", ":vs<cr>", { silent = true }) -- ウィンドウを水平に分割
+-- keymap("n", "<C-j>", ":sp<cr>", { silent = true }) -- ウィンドウを水平に分割
 
 -- Tab
 keymap("n", "B", "J", { silent = true, desc = "Join Lines" })
