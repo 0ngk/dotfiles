@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+{{ if eq .chezmoi.os "linux" -}}
+if [ -f /etc/alpine-release ]; then
+    sudo apk add \
+{{ range .packages.apk -}}
+        {{ . }} \
+{{ end -}}
+        ;
+fi
+fi
