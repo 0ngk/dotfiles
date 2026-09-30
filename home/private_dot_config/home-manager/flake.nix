@@ -22,11 +22,15 @@
     username = "rei";
     darwinSystem = "aarch64-darwin";
     alpineSystem = "x86_64-linux";
+    nixpkgsConfig = {
+      allowUnfree = true;
+    };
   in {
     darwinConfigurations.MacBookAir = nix-darwin.lib.darwinSystem {
       system = darwinSystem;
       specialArgs = {inherit inputs username;};
       modules = [
+        {nixpkgs.config = nixpkgsConfig;}
         ./hosts/darwin/MacBookAir.nix
         home-manager.darwinModules.home-manager
         {
@@ -45,7 +49,10 @@
     };
 
     homeConfigurations."${username}@alpine" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.${alpineSystem};
+      pkgs = import nixpkgs {
+        system = alpineSystem;
+        config = nixpkgsConfig;
+      };
       extraSpecialArgs = {inherit inputs username;};
       modules = [
         ./home/common.nix
