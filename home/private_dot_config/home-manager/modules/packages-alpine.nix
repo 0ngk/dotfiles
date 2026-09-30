@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs; [
   # Shell & terminal
-  git-delta
+  delta
   powershell
 
   # Language toolchains
@@ -76,7 +76,6 @@ with pkgs; [
   bitwarden-desktop
   burpsuite
   cloudflare-warp
-  wireshark-qt
 
   # Launcher
   vicinae
