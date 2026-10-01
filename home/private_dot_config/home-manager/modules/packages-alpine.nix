@@ -27,7 +27,7 @@ with pkgs; [
   zed-editor
 
   # Developer tools
-  # miniconda
+  conda
 
   # Database & API clients
   sqlitebrowser
@@ -35,6 +35,13 @@ with pkgs; [
   httpie-desktop
   insomnia
   postman
+
+  # Web browsers
+  chromium
+  firefox
+  firefox-devedition
+  google-chrome
+  microsoft-edge
 
   # Communication
   discord
