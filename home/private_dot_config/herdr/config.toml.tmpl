@@ -4,7 +4,7 @@ onboarding = false
 {{ if eq .chezmoi.os "darwin" -}}
 default_shell = "/run/current-system/sw/bin/fish"
 {{ else -}}
-default_shell = "~/.nix-profile/bin/fish"
+default_shell = "fish"
 {{ end -}}
 shell_mode = "login"
 

@@ -9,6 +9,8 @@ packages:
     - cryptsetup
     - dbus
     - doas
+    - docker
+    - docker-cli-compose
     - dosfstools
     - e2fsprogs
     - elogind
@@ -44,6 +46,8 @@ packages:
     - pipewire
     - pipewire-pulse
     - playerctl
+    - podman
+    - podman-compose
     - polkit-elogind
     - slurp
     - sway
