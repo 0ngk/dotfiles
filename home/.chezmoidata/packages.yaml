@@ -15,6 +15,11 @@ packages:
     - e2fsprogs
     - elogind
     - eudev
+    - fcitx5
+    - fcitx5-configtool
+    - fcitx5-gtk
+    - fcitx5-kkc
+    - fcitx5-qt
     - font-awesome
     - font-dejavu
     - font-nerd-fonts-symbols
@@ -28,6 +33,7 @@ packages:
     - iproute2
     - iw
     - iwd
+    - kitty-wayland
     - libnotify
     - linux-firmware-amd
     - linux-firmware-amdgpu
@@ -38,6 +44,7 @@ packages:
     - linux-firmware-rtl_nic
     - linux-lts
     - lvm2
+    - mesa-egl
     - nix
     - nix-openrc
     - openresolv

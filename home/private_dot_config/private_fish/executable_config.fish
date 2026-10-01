@@ -66,6 +66,9 @@ switch (uname)
     set -gx XDG_RUNTIME_DIR $TMPDIR
   case Linux
     set -gx XDG_RUNTIME_DIR /run/user/(id -u)
+    set -gx GTK_IM_MODULE fcitx
+    set -gx QT_IM_MODULE fcitx
+    set -gx XMODIFIERS '@im=fcitx'
 end
 
 # bash
