@@ -1,0 +1,26 @@
+onboarding = false
+
+[terminal]
+{{ if eq .chezmoi.os "darwin" -}}
+default_shell = "/run/current-system/sw/bin/fish"
+{{ else -}}
+default_shell = "~/.nix-profile/bin/fish"
+{{ end -}}
+shell_mode = "login"
+
+[ui.toast]
+delivery = "system"
+
+[keys]
+new_workspace = "ctrl+alt+n"
+previous_workspace = "ctrl+alt+k"
+next_workspace = "ctrl+alt+j"
+
+new_tab = "ctrl+alt+f"
+previous_tab = "ctrl+alt+h"
+next_tab = "ctrl+alt+l"
+
+cycle_pane_previous = "ctrl+alt+["
+cycle_pane_next = "ctrl+alt+]"
+
+split_vertical = "ctrl+alt+shift+l"

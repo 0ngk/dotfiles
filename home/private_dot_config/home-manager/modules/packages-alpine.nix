@@ -22,8 +22,6 @@ with pkgs; [
 
   # Editors & IDEs
   android-studio
-  intellij-idea
-  intellij-idea-oss
   jetbrains-toolbox
   vscode
   zed-editor
@@ -32,7 +30,6 @@ with pkgs; [
   # miniconda
 
   # Database & API clients
-  datagrip
   sqlitebrowser
   dbeaver-bin
   httpie-desktop

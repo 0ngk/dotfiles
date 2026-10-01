@@ -13,7 +13,6 @@ packages:
     - e2fsprogs
     - elogind
     - eudev
-    - firefox
     - font-awesome
     - font-dejavu
     - font-nerd-fonts-symbols
@@ -27,6 +26,7 @@ packages:
     - iproute2
     - iw
     - iwd
+    - libnotify
     - linux-firmware-amd
     - linux-firmware-amdgpu
     - linux-firmware-intel
