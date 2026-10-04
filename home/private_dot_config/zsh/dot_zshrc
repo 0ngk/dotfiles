@@ -19,6 +19,20 @@ fi
 # Check if running in interactive mode
 [[ -o interactive ]] || return
 
+# chezmoi cdの場合は cd ~/ しない
+if [[ -z ${CHEZMOI_SOURCE_DIR:-} ]]; then
+  cd ~ || return
+fi
+
+# Conda
+_conda_root=/opt/homebrew/Caskroom/miniconda/base
+if [[ -f "$_conda_root/etc/profile.d/conda.sh" ]]; then
+  source "$_conda_root/etc/profile.d/conda.sh"
+elif [[ -d "$_conda_root/bin" ]]; then
+  path=("$_conda_root/bin" $path)
+fi
+unset _conda_root
+
 # Configuration directory
 ZCONF_DIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/conf.d"
 

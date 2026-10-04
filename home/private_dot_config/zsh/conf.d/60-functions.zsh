@@ -2,6 +2,18 @@
 # Custom Functions
 # ========================================
 
+# Create a directory and cd into it.
+mkd() {
+  local -a directories=("$@")
+  mkdir -p -- "$@" || return
+  cd -- "${directories[-1]}"
+}
+
+# Print arguments (Fish configuration compatibility).
+tz() {
+  print -r -- "$@"
+}
+
 # URL decode
 urld() {
   print -rn -- "$*" | nkf -w --url-input

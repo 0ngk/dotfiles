@@ -5,7 +5,6 @@
 # Navigation
 alias b="cd .."
 alias c="cd"
-alias mkd="mkdir -p"
 
 # File operations
 if command -v eza >/dev/null 2>&1; then

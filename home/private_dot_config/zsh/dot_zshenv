@@ -5,9 +5,24 @@
 : ${XDG_DATA_HOME:="$HOME/.local/share"}
 : ${XDG_STATE_HOME:="$HOME/.local/state"}
 : ${XDG_CACHE_HOME:="$HOME/.cache"}
-: ${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}}
+if [[ "$OSTYPE" == linux* ]]; then
+  : ${XDG_RUNTIME_DIR:=/run/user/$(id -u)}
+else
+  : ${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}}
+fi
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME XDG_RUNTIME_DIR
+
+# Homebrew
+if [[ "$OSTYPE" == darwin* && -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+if [[ "$OSTYPE" == linux* ]]; then
+  export GTK_IM_MODULE=fcitx
+  export QT_IM_MODULE=fcitx
+  export XMODIFIERS='@im=fcitx'
+fi
 
 # ========================================
 # Zsh Configuration
@@ -38,12 +53,16 @@ export IPYTHONDIR="$XDG_CONFIG_HOME/ipython"
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
 export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
 export MPLCONFIGDIR="$XDG_CONFIG_HOME/matplotlib"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
 export PYTHONHISTFILE="$XDG_STATE_HOME/python/history"
 
 # ========================================
 # Go
 # ========================================
 export GOPATH="$XDG_DATA_HOME/go"
+
+# zoxide
+export Z_DATA_DIR="$XDG_DATA_HOME/z"
 
 # ========================================
 # Node.js / pnpm
@@ -160,3 +179,42 @@ export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 
 # Kotlin LSP
 export KOTLIN_LSP_DIR=/opt/homebrew/opt/kotlin-lsp/libexec
+
+# PATH entries shared with the Fish configuration.
+typeset -U path PATH
+_fish_path_candidates=(
+  "$HOME/.local/bin"
+  "$HOME/.nimble/bin"
+  "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+  "$HOME/.local/lib/python3.8/site-packages"
+  "/usr/lib/python3/dist-packages"
+  "$HOME/Library/Python/3.9/bin"
+  "$CARGO_HOME/bin"
+  "$HOME/.rvm/bin"
+  "$HOME/.yarn/bin"
+  "/usr/local/go/bin"
+  "$GOPATH"
+  "$GOPATH/bin"
+  "$PNPM_HOME/node_modules/.bin"
+  "$PNPM_HOME"
+  "$DENO_INSTALL_ROOT/bin"
+  "$DOTNET_CLI_HOME/.dotnet/tools"
+  "$COMPOSER_HOME/vendor/bin"
+)
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  _fish_path_candidates+=(
+    /Library/Developer/CommandLineTools/usr/bin
+    /usr/bin
+    /run/current-system/sw/bin
+  )
+else
+  _fish_path_candidates+=(/run/current-system/sw/bin)
+fi
+
+_fish_existing_paths=()
+for _fish_path in "${_fish_path_candidates[@]}"; do
+  [[ -n $_fish_path && -d $_fish_path ]] && _fish_existing_paths+=("$_fish_path")
+done
+path=("${_fish_existing_paths[@]}" $path)
+unset _fish_path_candidates _fish_existing_paths _fish_path
