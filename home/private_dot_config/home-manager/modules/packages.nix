@@ -45,6 +45,7 @@ with pkgs; [
   yazi
   exiftool
 
+  # Coding agents
   opencode
 
   # Terminal sessions
@@ -170,4 +171,8 @@ with pkgs; [
   rsync
   whois
   xdg-ninja
+
+  # Fonts
+  jetbrains-mono
+  nerd-fonts.monaspace
 ]
