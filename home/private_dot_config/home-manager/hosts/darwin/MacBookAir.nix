@@ -170,7 +170,6 @@
       brew "hettysoft/tap/hetty", trusted: true
       brew "daipeihust/tap/im-select", trusted: true
       cask "docker/tap/sbx", trusted: true
-      cask "nikitabobko/tap/aerospace", trusted: true
       cask "TheBoredTeam/boring-notch/boring-notch", trusted: true
     '';
 
@@ -333,6 +332,7 @@
       "copilot-cli"
       "openclaw"
       "antigravity"
+      "grok-bot"
     ];
   };
 

@@ -12,6 +12,10 @@ opt.viminfofile = "NONE"
 opt.encoding = "utf-8"
 opt.fileencoding = "utf-8"
 
+-- 検索
+opt.ignorecase = true
+opt.smartcase = true
+
 -- 行番号
 opt.number = true
 opt.relativenumber = true

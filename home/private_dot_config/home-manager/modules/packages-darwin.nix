@@ -8,6 +8,7 @@ with pkgs; [
   docker-compose
   colima
   lima
+  rustup
 
   # Network
   wireshark-cli

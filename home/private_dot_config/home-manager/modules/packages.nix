@@ -17,6 +17,9 @@ with pkgs; [
   vim
   neovim
 
+  # Developer tools
+  tmux
+
   # Version control
   commitizen
   delta
@@ -71,7 +74,6 @@ with pkgs; [
   php
   python314Packages.ipython
   python315
-  rustup
 
   # Package managers & build tools
   gradle
@@ -171,8 +173,4 @@ with pkgs; [
   rsync
   whois
   xdg-ninja
-
-  # Fonts
-  jetbrains-mono
-  nerd-fonts.monaspace
 ]

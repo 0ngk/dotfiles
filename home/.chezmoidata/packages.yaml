@@ -1,8 +1,10 @@
 packages:
   apk:
+    - alacritty
     - alpine-base
     - blkid
     - brightnessctl
+    - build-base
     - busybox-mdev-openrc
     - chrony
     - clipman
@@ -24,6 +26,7 @@ packages:
     - font-dejavu
     - font-nerd-fonts-symbols
     - font-noto-cjk
+    - font-noto-emoji
     - foot
     - fzf
     - gcompat
@@ -56,6 +59,7 @@ packages:
     - podman
     - podman-compose
     - polkit-elogind
+    - rustup
     - slurp
     - sway
     - swaybg
@@ -63,6 +67,7 @@ packages:
     - swaylock
     - swaylockd
     - swaync
+    - swayr
     - udev-init-scripts
     - udev-init-scripts-openrc
     - util-linux-login
