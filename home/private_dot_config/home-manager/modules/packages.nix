@@ -142,6 +142,7 @@ with pkgs; [
   yq
   zip
   zola
+  zstd
 
   # Media processing
   ffmpeg

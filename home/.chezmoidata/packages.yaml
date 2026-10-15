@@ -18,6 +18,7 @@ packages:
     - elogind
     - eudev
     - fcitx5
+    - fcitx5-anthy
     - fcitx5-configtool
     - fcitx5-gtk
     - fcitx5-kkc
